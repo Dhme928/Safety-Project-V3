@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <style>
+    /* ------------------------ الإعدادات الافتراضية (الجوال أولاً) ------------------------ */
+    body { 
+        font-family: 'Arial', sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        /* تغيير لون الخلفية الخارجية إلى رمادي فاتح جدًا */
+        background-color: #e9e9e9; 
+        height: 100vh; 
+        overflow: hidden; 
+    }
+    .app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-width: 500px; 
+        margin: 0 auto;
+        /* الخلفية الداخلية بيضاء لتركيز المحتوى */
+        background-color: white;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* زيادة عمق الظل */
+    }
+    /* شريط العنوان العلوي - تلوينه */
+    .header {
+        text-align: center;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        /* تغيير لون الخلفية للون أساسي مميز */
+        background-color: #333333; 
+        /* تغيير لون النص إلى الأبيض */
+        color: white; 
+        border-bottom: 1px solid #FF8C00;
+    }
+    .content-area {
+        flex-grow: 1;
+        overflow-y: auto; 
+        margin-bottom: 60px; 
+    }
+    .tab-content {
+        padding: 0;
+        display: none;
+        height: 100%;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        min-width: 100%; 
+        /* إزالة أي خلفية بيضاء قد تكون في الإطار */
+        background-color: transparent; 
+    }
+
+    /* ------------------------ تصميم بطاقات الإعلان (News Card) - الجديد ------------------------ */
+    /* تصميم خاص لتبويب News */
+    #NewsTab {
+        padding: 10px; 
+        background-color: #f4f4f4; /* خلفية خفيفة للتبويب */
+    }
+    .announcement-card {
+        background-color: white;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-right: 5px solid #FF8C00; /* شريط جانبي برتقالي */
+        display: flex;
+        flex-direction: column; 
+    }
+    .card-title {
+        font-weight: bold;
+        color: #333333;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    .card-date {
+        font-size: 10px;
+        color: #888;
+        margin-bottom: 10px;
+        border-bottom: 1px dashed #eee;
+        padding-bottom: 5px;
+    }
+    .card-content {
+        font-size: 13px;
+        color: #555;
+    }
+    /* ---------------------------------------------------------------------------------- */
+
+
+    /* شريط التنقل - Nav Bar (ثابت في الأسفل لجميع الشاشات) */
+    .nav-bar {
+        display: flex;
+        justify-content: space-around;
+        position: fixed; 
+        bottom: 0;
+        width: 100%;
+        max-width: 500px; 
+        height: 60px;
+        background-color: white;
+        /* ظل علوي بارز */
+        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.15); 
+        z-index: 10;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .nav-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        font-size: 11px;
+        cursor: pointer;
+        /* تم التعديل إلى 25% لاستيعاب 4 أزرار (4*25% = 100%) */
+        width: 25%;
+        transition: color 0.3s; /* إضافة حركة خفيفة للون */
+    }
+    .nav-button.active {
+        color: #FF8C00; /* اللون البرتقالي للتفعيل */
+        font-weight: bold;
+    }
+    .nav-button:hover {
+        color: #FF8C00;
+    }
+    .nav-icon {
+        font-size: 20px;
+        margin-bottom: 3px;
+    }
+    
+    /* أيقونات يونيكود - إضافة أيقونة الأخبار */
+    .icon-news::before { content: "📰"; }
+    .icon-form::before { content: "📝"; } 
+    .icon-data::before { content: "📊"; } 
+    .icon-tasks::before { content: "✅"; } 
+
+
+    /* ------------------------ استعلام الوسائط (Media Query) للحاسوب 💻 ------------------------ */
+    @media (min-width: 600px) {
+        
+        .app-container {
+            max-width: 1000px; 
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3); /* ظل أعمق للحاسوب */
+            height: 90vh; 
+            margin-top: 5vh;
+            margin-bottom: 5vh;
+            border-radius: 12px; /* حواف أكثر وضوحًا */
+            overflow: hidden; /* لضمان عدم خروج أي شيء عن الحدود */
+        }
+
+        .nav-bar {
+            max-width: 1000px;
+        }
+        
+        .content-area {
+            margin-bottom: 60px;
+        }
+
+        .nav-button span {
+            font-size: 14px;
+        }
+        .nav-icon {
+            font-size: 24px;
+        }
+        /* لتنظيم البطاقات في عرض الحاسوب */
+        .announcement-card {
+            max-width: 800px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">Safety Observations 👷 تطبيق ملاحظاتي </div>
+    
+    <div class="content-area">
+        
+        <div id="NewsTab" class="tab-content" data-src="https://docs.google.com/spreadsheets/d/1_SwxL5f4mWF5kd2yofCMCEE_WQp_2eroHDhXXPXtw1U/export?format=csv&gid=0">
+            <div id="AnnouncementsContainer">
+                <div class="announcement-card">
+                    <div class="card-date">التاريخ: يتم التحميل...</div>
+                    <div class="card-title">جاري تحميل الأخبار...</div>
+                    <div class="card-content">إذا استمرت هذه الرسالة، تحقق من إعدادات مشاركة Google Sheet.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="FormTab" class="tab-content">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfYED_4UfHcmWn0fQOjtR5s8A0-Bhr4dwpe-80GjKkLeTR_Lw/viewform?embedded=true"></iframe>
+        </div>
+
+        <div id="DataTab" class="tab-content" data-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTXlN-sE-IkQJLMaVOvRGSBYNLsDvwZTD15w7rarTIXBGoacF0C5_eiI7OmFs__zA8jtlwhy0ULLZ8N/pubhtml">
+            </div>
+
+        <div id="TasksTab" class="tab-content" data-src="PLACEHOLDER_DAILY_TASKS_URL">
+            </div>
+    </div>
+    
+    <div class="nav-bar">
+        <div class="nav-button" onclick="openTab(event, 'NewsTab')">
+            <span class="nav-icon icon-news"></span>
+            <span>News</span>
+        </div>
+        
+        <div class="nav-button" onclick="openTab(event, 'FormTab')">
+            <span class="nav-icon icon-form"></span>
+            <span>Observation</span>
+        </div>
+        <div class="nav-button" onclick="openTab(event, 'DataTab')">
+            <span class="nav-icon icon-data"></span>
+            <span>Safety Data</span>
+        </div>
+        <div class="nav-button" onclick="openTab(event, 'TasksTab')">
+            <span class="nav-icon icon-tasks"></span>
+            <span>Daily Tasks</span>
+        </div>
+    </div>
+</div>
+
+<script>
+  /**
+   * دالة لجلب وتحليل بيانات الإعلانات من رابط Google Sheet بصيغة CSV
+   */
+  function loadNews() {
+    const newsTab = document.getElementById('NewsTab');
+    const container = document.getElementById('AnnouncementsContainer');
+    const url = newsTab.getAttribute('data-src');
+
+    // إظهار رسالة خطأ إذا لم يتم نشر الرابط بالشكل الصحيح
+    if (!url || !url.includes('google.com/spreadsheets/d/')) {
+        container.innerHTML = `<div class="announcement-card"><div class="card-title" style="color: red;">خطأ في الإعدادات</div><div class="card-content">يرجى التحقق من رابط Google Sheet بصيغة CSV.</div></div>`;
+        return;
+    }
+    
+    // استخدام Fetch API لجلب البيانات
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                // قد يحدث هذا الخطأ إذا لم يتم نشر الملف بشكل عام
+                throw new Error('فشل في جلب البيانات. قد يكون الملف غير منشور كـ CSV.');
+            }
+            return response.text();
+        })
+        .then(data => {
+            // تحليل بيانات CSV: إزالة صف الرؤوس (Header)
+            const rows = data.trim().split('\n').slice(1);
+            let htmlContent = '';
+
+            rows.forEach(row => {
+                // تقسيم الصف والتعامل مع الإزالة المبدئية والنهائية لعلامات الاقتباس
+                // استخدام تعبير منتظم أكثر دقة لتقسيم CSV
+                const columns = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+                
+                if (columns.length >= 3) {
+                    // تنظيف علامات الاقتباس حول كل عمود
+                    const date = columns[0].trim().replace(/^"|"$/g, '');
+                    const title = columns[1].trim().replace(/^"|"$/g, '');
+                    const content = columns[2].trim().replace(/^"|"$/g, '');
+                    
+                    // إنشاء بطاقة إعلان
+                    htmlContent += `
+                        <div class="announcement-card">
+                            <div class="card-date">التاريخ: ${date}</div>
+                            <div class="card-title">${title}</div>
+                            <div class="card-content">${content}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            // عرض المحتوى أو رسالة عدم وجود إعلانات
+            if (htmlContent) {
+                container.innerHTML = htmlContent;
+            } else {
+                container.innerHTML = `<div class="announcement-card"><div class="card-title">لا توجد إعلانات حالياً</div><div class="card-content">سيتم عرض أي إعلانات جديدة هنا.</div></div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading news:', error);
+            container.innerHTML = `<div class="announcement-card"><div class="card-title" style="color: red;">خطأ في تحميل الإعلانات</div><div class="card-content">لم نتمكن من الاتصال بمصدر البيانات. تأكد من أن الملف منشور (Published) وبتنسيق CSV.</div></div>`;
+        });
+  }
+
+
+  /* ------------------------ دالة التحكم بالتبويبات والتحميل البطيء ------------------------ */
+  function openTab(evt, tabName) {
+    var tabcontent = document.getElementsByClassName("tab-content");
+    var navbuttons = document.getElementsByClassName("nav-button");
+
+    // 1. إخفاء جميع محتويات التبويبات
+    for (var i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].classList.remove('active');
+    }
+
+    // 2. إزالة حالة التفعيل من جميع أزرار التنقل
+    for (var i = 0; i < navbuttons.length; i++) {
+      navbuttons[i].classList.remove("active");
+    }
+
+    // 3. إظهار التبويب الحالي وتفعيل الزر الخاص به
+    var currentTab = document.getElementById(tabName);
+    currentTab.classList.add('active');
+    evt.currentTarget.classList.add("active");
+    
+    // 4. التحميل الديناميكي لـ News أو التحميل البطيء لـ iFrames
+    var url = currentTab.getAttribute('data-src');
+    
+    if (tabName === 'NewsTab') {
+        // تحميل الإعلانات الديناميكية
+        loadNews();
+    } else if (url && currentTab.children.length === 0) {
+        // التحميل البطيء لـ iFrames: لا يتم تحميلها إلا عند الحاجة وللمرة الأولى
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        currentTab.appendChild(iframe);
+    }
+  }
+
+  // تفعيل التبويب الأول (NewsTab) عند تحميل الصفحة
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // نستخدم الزر الأول في القائمة (والذي أصبح زر News)
+    const firstButton = document.querySelector('.nav-bar .nav-button');
+    if (firstButton) {
+        openTab({currentTarget: firstButton}, 'NewsTab');
+    }
+  });
+</script>
+
+</body>
+</html>
