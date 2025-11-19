@@ -10,7 +10,13 @@
     <link rel="icon" type="image/png" href="https://drive.google.com/uc?export:view&id=1pT2_mI_B9CrnOde6YK__OzBd2gYEppXy">
     <title>My Observations App 👷🏻‍♂️</title>
     <style>
-        /* 🟢 3. توحيد الألوان باستخدام متغيرات CSS */
+        /* 🟢 Global Reset for Alignment */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 🟢 3. Colors & Variables */
         :root {
           /* Light Mode Colors (Defaults) */
           --primary-color: #FF6F00; /* Darker, richer orange */
@@ -29,7 +35,7 @@
           --card-background: #FFFFFF; /* Card/Panel background */
           --modal-background: #fefefe; /* Modal content background */
           --hover-background: #E0E5E9; /* Hover on accordion/button */
-          --header-background-color: red; /* 🆕 خلفية الهيدر في الوضع الفاتح */
+          --header-background-color: #C0392B; /* Using Red for Safety Group Identity */
           
           /* Dark Mode Colors (Custom Properties) */
           --dark-bg: #1e1e1e;
@@ -40,7 +46,7 @@
           --dark-hover-bg: #3c3c3c;
 
 
-          /* متغيرات العرض الافتراضية للجوال */
+          /* Mobile Defaults */
           --app-max-width: 500px;
           --app-height: 90vh;
           --app-margin: 0 auto;
@@ -56,51 +62,93 @@
             --card-background: var(--dark-card-bg);
             --accent-light: var(--dark-hover-bg); 
             --modal-background: var(--dark-card-bg);
-            --secondary-color: var(--dark-text); /* Use light text color for secondary elements (e.g. header text) */
+            --secondary-color: var(--dark-text); 
             --hover-background: var(--dark-hover-bg);
-            --app-container-shadow: 0 8px 20px rgba(255,255,255,0.05); /* Lighter shadow for dark mode */
-            --header-background-color: #1a1a1a; /* 🛑 خلفية الهيدر الداكنة */
+            --app-container-shadow: 0 8px 20px rgba(255,255,255,0.05); 
+            --header-background-color: #1a1a1a; 
         }
 
 
         /* ======================================= */
-        /* === القواعد الافتراضية (الجوال أولاً) === */
+        /* === Core Layout === */
         /* ======================================= */
 
         body {
-            font-family: 'Lato', sans-serif; /* Body text font */
+            font-family: 'Lato', sans-serif;
             margin:0;
             padding:0;
-            background-color:var(--body-background-color); /* متغير جديد */
+            background-color:var(--body-background-color);
             height:100vh;
             overflow:hidden;
-            color: var(--text-color); /* لون النص الافتراضي */
-            transition: background-color 0.3s, color 0.3s; /* لتنعيم الانتقال */
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, color 0.3s;
         }
+        
         .app-container {
             display:flex;
             flex-direction:column;
             height: var(--app-height);
-            max-width: var(--app-max-width); /* حجم الجوال */
-            margin: var(--app-margin);
-            background-color:var(--background-color); /* متغير جديد */
-            box-shadow:var(--app-container-shadow, 0 8px 20px rgba(0,0,0,0.1)); /* متغير جديد */
-            border-radius: 12px; /* More rounded corners */
-            overflow: hidden; /* لمنع بروز العناصر خارج الحدود */
+            width: 100%;
+            max-width: var(--app-max-width);
+            margin: 0 auto; /* Centering */
+            background-color:var(--background-color);
+            box-shadow:var(--app-container-shadow, 0 8px 20px rgba(0,0,0,0.1));
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative; /* Ensure containment */
             transition: background-color 0.3s, box-shadow 0.3s;
         }
+
+        /* 🆕 Header Structure Update */
         .header {
-            text-align:center;
-            padding:20px 20px; /* Slightly more padding */
-            font-family: 'Poppins', sans-serif; /* Heading font */
-            font-size:20px; /* Slightly larger */
-            font-weight:700; /* Heavier weight for impact */
-            background-color:var(--header-background-color); /* 🛑 تم التعديل هنا */
-            color:white;
-            border-bottom:3px solid var(--primary-color); /* Thicker accent line */
-            position: relative; /* For the gradient effect */
-            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the content group */
+            padding: 15px 20px;
+            background-color: var(--header-background-color);
+            color: white;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: 80px; /* Fixed height for consistency */
         }
+
+        .header-content-group {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Space between Logo and Text */
+        }
+
+        /* 🆕 Logo Styles */
+        .app-logo {
+            height: 50px; /* Set consistent size */
+            width: 50px;
+            object-fit: cover;
+            border-radius: 50%; /* Circular shape */
+            border: 2px solid white;
+            background-color: white;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-align: left;
+        }
+
+        .header-subtitle {
+            font-size: 10px;
+            opacity: 0.9;
+            font-weight: 400;
+            display: block;
+        }
+        
         /* Gradient overlay for header */
         .header::before {
             content: '';
@@ -109,53 +157,52 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* نستخدم نفس الألوان ولكن بشفافية */
             background: linear-gradient(135deg, rgba(255,111,0,0.1) 0%, var(--secondary-color, rgba(44,62,80,0.1)) 100%);
-            z-index: 0;
-        }
-        .header span {
-            position: relative;
-            z-index: 1;
+            z-index: -1;
         }
 
         .content-area {
             flex-grow:1;
             overflow-y:auto;
-            /* 🟢 التعديل الأول: زيادة الهامش السفلي لمنع تغطية الزر العائم للمحتوى */
-            margin-bottom:135px; /* كانت 65px */
-            padding: 15px; /* Add some general padding for content */
+            /* 🟢 UPDATED: Increased margin to ensure floating button doesn't cover content */
+            margin-bottom: 0; 
+            padding: 15px;
+            width: 100%; /* Ensure full width alignment */
+            padding-bottom: 150px; /* Extra space for scrolling past floating button */
         }
+        
         .tab-content {
             display:none;
             height:100%;
-            box-sizing: border-box; /* لحساب الـ padding داخل الـ height */
+            width: 100%;
         }
         .tab-content.active {
             display:block;
-        }
-        /* ارتفاع الإطارات: يعتمد على ارتفاع التاب */
-        iframe {
-            width:100%;
-            height:calc(100% - 0px); /* Adjust for content-area padding */
-            border:none;
-            border-radius: 8px; /* Rounded corners for iframes */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Subtle shadow for iframes */
-        }
-        /* ارتفاع محتوى المعلومات */
-        #InfoTab, #ToolsTab {
-            overflow-y:auto;
-            max-height:calc(100% - 0px); /* Adjust for content-area padding */
-            padding-bottom:100px;
+            animation: fadeIn 0.3s ease;
         }
 
-        /* 🟢 2. تعديل بطاقة الأخبار لـ UX */
+        /* Iframe alignment fixes */
+        iframe {
+            width:100%;
+            height: 100%;
+            border:none;
+            border-radius: 8px;
+            background: white; /* Fallback */
+        }
+        
+        /* Info Tab alignment fixes */
+        #InfoTab, #ToolsTab, #JSATab {
+            padding-bottom: 80px; 
+        }
+
+        /* 🟢 2. Announcement Card Styles */
         .announcement-card {
-            background-color:var(--card-background); /* متغير جديد */
-            border-radius:10px; /* More rounded */
-            margin-bottom:15px; /* More space */
-            padding:18px; /* More padding */
-            box-shadow:0 4px 10px rgba(0,0,0,0.08); /* Softer shadow */
-            border-left:6px solid var(--primary-color); /* Thicker accent border */
+            background-color:var(--card-background);
+            border-radius:10px;
+            margin-bottom:15px;
+            padding:18px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.08);
+            border-left:6px solid var(--primary-color);
             cursor:pointer;
             position: relative;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s;
@@ -170,29 +217,29 @@
         .card-title {
             font-family: 'Poppins', sans-serif;
             font-weight:600;
-            color:var(--text-color); /* متغير جديد */
+            color:var(--text-color);
             font-size:17px;
-            padding-right: 35px; /* Space for icon */
+            padding-right: 35px;
             position: relative;
-            text-align: left; /* Align title to left */
+            text-align: left;
         }
         .card-date {
             font-size:11px;
             color:var(--text-muted);
             margin-bottom:12px;
-            border-bottom:1px solid var(--border-color); /* Lighter border */
+            border-bottom:1px solid var(--border-color);
             padding-bottom:8px;
-            text-align: left; /* Align date to left */
+            text-align: left;
         }
         .card-content {
             font-size:14px;
-            color:var(--text-color); /* متغير جديد */
+            color:var(--text-color);
             display:none;
             text-align:justify;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px dotted var(--border-color);
-            line-height: 1.6; /* Better readability */
+            line-height: 1.6;
         }
         .card-title .toggle-icon {
             position: absolute;
@@ -206,7 +253,6 @@
         .card-title.open .toggle-icon {
             transform: translateY(-50%) rotate(180deg);
         }
-        /* نهاية تعديل بطاقة الأخبار */
 
         .info-month {
             font-family: 'Poppins', sans-serif;
@@ -214,49 +260,41 @@
             font-weight:700;
             margin:10px 0 16px 0;
             text-align:center;
-            color: var(--text-color); /* متغير جديد */
+            color: var(--text-color);
         }
         .accordion {
             background-color:var(--accent-light);
-            color:var(--text-color); /* اللون الافتراضي للنص */
+            color:var(--text-color);
             cursor:pointer;
-            padding:15px 18px; /* More padding */
+            padding:15px 18px;
             width:100%;
             text-align:left;
             border:none;
             outline:none;
-            /* 🔴 مهم: يجب أن تكون Transition على color و background-color */
             transition:background-color 0.3s ease, transform 0.2s ease, color 0.3s ease; 
             font-family: 'Lato', sans-serif;
             font-size:15px;
-            border-radius:8px; /* More rounded */
+            border-radius:8px;
             font-weight:700;
             display: flex;
             align-items: center;
             margin-top: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .accordion:hover {
-            background-color:var(--hover-background); /* متغير جديد */
+            background-color:var(--hover-background);
             transform: translateY(-2px);
         }
-        /* 🛑 التعديل هنا: عند تفعيل الأكورديون - سيتم تجاوزه بالـ JS لتطبيق اللون الديناميكي */
         .accordion.activeAcc {
-            /* سنعتمد على inline style في JS */
             transform: translateY(-2px);
         }
-        
-        /* 🛑 التعديل هنا: الرمز يرث لون النص (والذي سيصبح أبيض عند التفعيل) */
         .accordion i {
-            margin-inline-end: 12px; /* More space */
-            font-size: 19px; /* Slightly larger icon */
-            /* الرمز يرث اللون من الأب */
+            margin-inline-end: 12px;
+            font-size: 19px;
             color: inherit !important; 
             transition: color 0.3s ease;
         }
-        /* تعديل خاص لزر الطوارئ */
         #emergencyAccordion {
-            /* سنعتمد على data-color=danger-color أو #FF0000 */
             border: 2px solid var(--danger-color);
         }
         #emergencyAccordion:hover {
@@ -264,7 +302,6 @@
             color: white;
             border-color: var(--danger-color);
         }
-        /* الألوان عند تفعيل زر الطوارئ */
         #emergencyAccordion.activeAcc {
             background-color: var(--danger-color) !important;
             color: white !important;
@@ -273,14 +310,13 @@
 
 
         .panel {
-            padding:15px 18px; /* More padding */
+            padding:15px 18px;
             display:none;
-            background-color:var(--card-background); /* متغير جديد */
+            background-color:var(--card-background);
             overflow-y:auto;
-            /* 🛑 التعديل هنا: الخط الجانبي يرث اللون المخصص */
             border-left:5px solid currentColor; 
             margin-top:10px;
-            border-radius:0 8px 8px 0; /* Only right/bottom rounded for accent */
+            border-radius:0 8px 8px 0;
             max-height:500px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.07);
             transition: background-color 0.3s, box-shadow 0.3s;
@@ -289,48 +325,35 @@
              box-shadow: 0 2px 8px rgba(255,255,255,0.05);
         }
         .panel ul, .panel ol {
-            padding-left: 28px; /* Adjust padding for list items */
+            padding-left: 28px;
             margin-top: 8px;
             margin-bottom: 8px;
         }
         .panel ul li, .panel ol li {
             margin-bottom: 6px;
             line-height: 1.5;
-            color: var(--text-color); /* متغير جديد */
+            color: var(--text-color);
         }
-/* (بقية أنماط القوائم كما هي) */
-/* (تكملة أنماط CSS من الجزء الأول) */
-
-        /* 🛠️ التعديل هنا: تطبيق النقاط البرتقالية فقط على القوائم غير المرقمة (<ul>) */
         .panel ul li:before {
             content:"\2022";
-            /* 🛑 التعديل هنا: النقاط ترث لون الأكورديون النشط */
             color: currentColor; 
             font-weight:bold;
             display:inline-block;
             width:1em;
             margin-left: -1em;
         }
-
-        /* 🆕 إعادة تفعيل الترقيم الافتراضي للقوائم المرقمة (<ol>) بدون نقاط إضافية */
         .panel ol {
-            list-style-type: decimal; /* للتأكد من استخدام الأرقام 1, 2, 3... */
-            padding-left: 25px; /* لإعطاء مساحة للترقيم الافتراضي */
+            list-style-type: decimal;
+            padding-left: 25px;
             margin-top: 5px;
         }
         .panel ol li {
             list-style-type: decimal;
             margin-bottom: 5px;
         }
-        /* نهاية تعديل القوائم */
-        
-        /* ======================================= */
-        /* === أنماط الأكورديون الخاص بـ JSA (جديد) === */
-        /* ======================================= */
 
-        /* نستخدم نفس أنماط .accordion و .panel ولكن بفئة مختلفة لضمان الفصل */
+        /* JSA Styles */
         .jsa-accordion-item {
-            /* يرث كل أنماط .accordion */
             cursor:pointer;
             padding:15px 18px; 
             width:100%;
@@ -346,12 +369,11 @@
             align-items: center;
             margin-top: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            /* أنماط خاصة به */
             background-color: var(--accent-light);
-            color: var(--text-color); /* متغير جديد */
+            color: var(--text-color);
         }
         .jsa-accordion-item:hover {
-            background-color:var(--hover-background); /* متغير جديد */
+            background-color:var(--hover-background);
             transform: translateY(-2px);
         }
         .jsa-accordion-item i {
@@ -360,26 +382,20 @@
             color: inherit !important; 
             transition: color 0.3s ease;
         }
-        /* تفعيل الأكورديون (تم تركه للتحكم بواسطة JS) */
         .jsa-accordion-item.activeAcc {
             transform: translateY(-2px);
         }
-
-
         .jsa-panel {
-            /* يرث كل أنماط .panel */
             padding:15px 18px; 
             display:none;
-            background-color:var(--card-background); /* متغير جديد */
+            background-color:var(--card-background);
             overflow-y:auto;
-            border-left:5px solid currentColor; /* مهم: ليرث اللون */
+            border-left:5px solid currentColor;
             margin-top:8px;
             border-radius:0 8px 8px 0; 
             max-height:500px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
-
-        /* تعديل النقاط لـ JSA Panel */
         .jsa-panel ul li:before {
             content:"\2022";
             color: currentColor; 
@@ -388,24 +404,19 @@
             width:1em;
             margin-left: -1em;
         }
-        /* نهاية أنماط أكورديون JSA */
-        
 
-        /* === شريط التنقل - الألوان المخصصة و التحسينات === */
+        /* Navigation Bar */
         .nav-bar {
             display:flex;
             justify-content:space-around;
-            position:fixed;
+            position:absolute; /* Fixed to bottom of container */
             bottom:0;
             width:100%;
-            max-width: var(--app-max-width); /* يتبع العرض الأقصى للحاوية */
-            height:65px; /* Slightly taller nav bar */
-            background-color:var(--card-background); /* متغير جديد */
-            box-shadow:0 -5px 20px rgba(0,0,0,0.1); /* Softer shadow upwards */
+            height:65px;
+            background-color:var(--card-background);
+            box-shadow:0 -5px 20px rgba(0,0,0,0.1);
             z-index:10;
-            left:50%;
-            transform:translateX(-50%);
-            border-radius: 0 0 12px 12px; /* Match app container corners */
+            border-radius: 0 0 12px 12px;
             transition: background-color 0.3s, box-shadow 0.3s;
         }
         .dark-mode .nav-bar {
@@ -414,43 +425,36 @@
 
         .nav-button {
             display:flex; flex-direction:column; align-items:center; justify-content:center;
-            color:var(--text-muted); /* Muted color for inactive */
-            font-size:10px; /* 🆕 Smaller font to fit 6 buttons */
+            color:var(--text-muted);
+            font-size:10px;
             cursor:pointer;
-            width: 16.66%; /* 🆕 6 buttons = 16.66% each */
+            width: 16.66%;
             transition:color 0.3s ease, transform 0.2s ease;
             position: relative;
             font-family: 'Lato', sans-serif;
             font-weight: 600;
-            padding: 0 2px; /* Prevent text wrapping issues */
+            padding: 0 2px;
             text-align: center;
         }
         
-        /* 🛑 التعديل هنا: نعتمد على JavaScript لتطبيق لون الزر النشط */
         .nav-button.active { 
-             /* لون الزر (النص) سيتم تحديده في JavaScript باستخدام data-color */
              font-weight:bold; 
-             /* نستخدم اللون الحالي للزر النشط كخلفية للخط العلوي */
              color: inherit; 
         }
 
-        /* 🟢 2. إضافة خط علوي للزر النشط */
         .nav-button.active::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; /* Thicker accent line */
-            /* نستخدم "currentColor" ليرث لون الزر النشط (الأخضر، الأصفر، إلخ) */
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
             background-color: currentColor; 
             border-radius: 0 0 5px 5px;
         }
 
         .nav-button:hover { color:var(--primary-color); transform: translateY(-3px); }
         .nav-icon { 
-            font-size:20px; /* Slightly smaller to fit */
+            font-size:20px;
             margin-bottom:4px; 
-            /* نستخدم "currentColor" لكي يرث الرمز لون الزر الأب (.nav-button) */
             color: currentColor; 
         } 
         
-        /* 🟢 4. مؤشر التحميل (Spinner) */
         .loading-spinner {
             display: flex; justify-content: center; align-items: center; padding: 25px; color: var(--primary-color); font-size: 18px;
             font-weight: bold;
@@ -459,13 +463,14 @@
 
         /* MODAL STYLES */
         .modal {
-            display: none; position: fixed; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+            display: none; position: absolute; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
             background-color: rgba(0,0,0,0.6); 
             padding-top: 60px;
+            border-radius: 12px; /* Clip to container */
             animation: fadeIn 0.3s ease-out; 
         }
         .modal-content {
-            background-color: var(--modal-background); /* متغير جديد */
+            background-color: var(--modal-background);
             margin: 5% auto; padding: 25px; border: none; 
             width: 90%; max-width: 450px; 
             border-radius: 12px; 
@@ -473,7 +478,7 @@
             position: relative;
             animation: slideIn 0.3s ease-out; 
             transition: background-color 0.3s;
-            color: var(--text-color); /* لضمان أن النص يتبع وضع الألوان */
+            color: var(--text-color);
         }
         .close-btn {
             color: var(--text-muted); float: right; font-size: 30px; font-weight: bold; cursor: pointer;
@@ -492,18 +497,18 @@
         #emergencyContactsModal h3 { color: var(--secondary-color); font-family: 'Poppins', sans-serif; }
 
 
-        /* 🆕 CSS for Floating Button (Add New Observation) */
+        /* Floating Button */
         #addObservationButton {
-            position: fixed;
-            bottom: 85px; /* Adjust based on nav-bar height (65px) + desired gap */
+            position: absolute;
+            bottom: 85px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 15; /* Above nav bar but below modals */
+            z-index: 15;
             background-color: var(--primary-color);
             color: white;
             border: none;
             padding: 15px 25px;
-            border-radius: 30px; /* Fully rounded */
+            border-radius: 30px;
             font-family: 'Poppins', sans-serif;
             font-size: 16px;
             font-weight: 700;
@@ -514,17 +519,16 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            max-width: var(--app-max-width); /* To limit its width within the app container */
-            width: calc(100% - 60px); /* Adjust width to fit the container with margin */
+            width: calc(100% - 60px);
             justify-content: center;
+            max-width: 350px;
         }
         #addObservationButton:hover {
-            background-color: #E86A00; /* Slightly darker orange */
+            background-color: #E86A00;
             transform: translateX(-50%) scale(1.03);
         }
-        /* End Floating Button CSS */
         
-        /* 🆕 CSS for JSA Tab Search Bar & KPI Inputs */
+        /* Tools UI */
         #jsaSearch, .kpi-input-field {
             width: 100%;
             padding: 12px;
@@ -534,8 +538,8 @@
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s, color 0.3s;
-            background-color: var(--card-background); /* متغير جديد */
-            color: var(--text-color); /* متغير جديد */
+            background-color: var(--card-background);
+            color: var(--text-color);
         }
         #jsaSearch:focus, .kpi-input-field:focus {
             border-color: var(--jsa-color);
@@ -543,11 +547,9 @@
             outline: none;
         }
         .dark-mode #jsaSearch, .dark-mode .kpi-input-field {
-             /* لإظهار الـ placeholder في الـ Dark Mode */
              color: var(--dark-text);
         }
         
-        /* 🆕 KPI Card Styles (Based on Announcement Card) */
         .kpi-card {
             background-color: var(--card-background);
             border-radius: 10px;
@@ -600,7 +602,7 @@
             font-weight: bold;
         }
         .kpi-input-field {
-            margin-bottom: 0; /* Override default */
+            margin-bottom: 0; 
             padding: 8px;
             font-size: 14px;
         }
@@ -619,12 +621,10 @@
         .kpi-result-value { font-size: 20px; font-weight: 700; font-family: 'Poppins', sans-serif; }
         .kpi-citation { font-size: 10px; color: var(--text-muted); margin-top: 8px; font-style: italic; }
         
-        /* Result Colors */
         .text-good { color: var(--success-color); }
         .text-bad { color: var(--danger-color); }
         .text-neutral { color: var(--text-muted); }
 
-        /* 🆕 Tool Toggle (KPI vs Heat Stress) */
         .tool-toggle-container {
             display: flex;
             justify-content: center;
@@ -651,12 +651,10 @@
             color: white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        /* Separate color for Heat Stress active state */
         .tool-toggle-btn.active-tool[data-tool="heat"] {
             background-color: var(--heat-color);
         }
         
-        /* 🆕 Heat Stress Result Card */
         #heatIndexResultCard {
             display: none;
             padding: 25px;
@@ -696,9 +694,6 @@
         }
 
         
-        /* ------------------------------------- */
-        /* 🟢 أنماط النافذة المنبثقة لتأكيد JSA */
-        /* ------------------------------------- */
         #jsaConfirmationModal .modal-content {
             margin: 15% auto; 
             padding: 20px;
@@ -712,7 +707,7 @@
             margin-top: 0;
         }
         #jsaConfirmationModal p {
-            color: var(--text-color); /* متغير جديد */
+            color: var(--text-color);
             font-size: 15px;
             margin: 20px 0;
         }
@@ -732,7 +727,6 @@
         }
         
         
-        /* Keyframe Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -743,81 +737,38 @@
         }
 
 
-        /* ======================================= */
-        /* 🆕 أنماط زر تبديل الوضع (Dark/Light Mode) */
-        /* ======================================= */
         .mode-toggle {
             position: absolute;
-            top: 25px;
             right: 20px; 
             cursor: pointer;
-            color: white; /* Always white on the dark header */
+            color: white;
             font-size: 20px;
             transition: transform 0.2s;
-            z-index: 2;
+            z-index: 11;
         }
         .mode-toggle:hover {
             transform: scale(1.1);
         }
 
-        /* ======================================= */
-        /* === استعلام الوسائط لشاشات الكمبيوتر === */
-        /* ======================================= */
+        /* Desktop Overrides */
         @media (min-width: 768px) {
-            /* تغيير المتغيرات الخاصة بالعرض لشاشة الكمبيوتر */
             :root {
                 --app-max-width: 1000px; 
                 --app-height: 95vh;
                 --app-margin: 2.5vh auto;
             }
 
-            /* ضبط ارتفاع الإطارات لتناسب الحاوية الأكبر */
-            iframe {
-                height: 100%;
-            }
-
-            /* ضبط ارتفاع محتوى المعلومات */
-             #InfoTab, #ToolsTab {
-                height: 100%;
-                max-height: 100%;
-                padding-bottom: 80px; 
-            }
-
-            /* مساحة المحتوى */
-             /* 🟢 التعديل الأول: تطبيق الهامش الإضافي على الكمبيوتر أيضاً */
-            .content-area {
-                margin-bottom: 150px; 
-            }
-
-            /* شريط التنقل يتبع العرض الجديد للحاوية */
-            .nav-bar {
-                max-width: var(--app-max-width);
-                border-radius: 0 0 12px 12px;
-            }
+            iframe { height: 100%; }
             
-            /* Floating Button for Desktop */
-            #addObservationButton {
-                 max-width: 400px; /* Limit width on desktop */
-                 width: auto;
-            }
+            .header { justify-content: center; }
 
-            /* Flexbox for better modal centering on desktop */
-            .modal {
-                padding-top: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .modal-content {
-                margin: auto; 
-            }
+            #InfoTab, #ToolsTab { height: 100%; max-height: 100%; }
             
-            /* Grid for KPI Cards on Desktop */
-            #kpiListContainer {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+            /* Better modal positioning for desktop */
+            .modal { display: flex; align-items: center; justify-content: center; padding-top: 0; }
+            .modal-content { margin: auto; }
+            
+            #kpiListContainer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         }
     </style>
 </head>
@@ -894,9 +845,28 @@
     </div>
 </div>
 
+<div id="jsaConfirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="hideJSAConfirmationModal()">&times;</span>
+        <h2>فتح مستند تحليل سلامة العمل (JSA)</h2>
+        <p>سيتم نقلك إلى مستند Google Drive. هل أنت متأكد من رغبتك في المتابعة؟</p>
+        
+        <a id="driveLinkConfirm" href="#" target="_blank" class="drive-button">
+            ✅ نعم، افتح المستند في Google Drive
+        </a>
+    </div>
+</div>
+
+
 <div class="app-container">
     <div class="header">
-        <span>My Observations App 👷🏻‍♂️</span>
+        <div class="header-content-group">
+            <img src="CAT.jpeg" alt="App Logo" class="app-logo" onerror="this.style.display='none';">
+            <div>
+                <span class="header-title">My Observations App 👷🏻‍♂️</span>
+                <span class="header-subtitle">Safety Group CAT L.L.C.</span>
+            </div>
+        </div>
         <div class="mode-toggle" onclick="toggleDarkMode()">
              <i id="modeIcon" class="fas fa-moon"></i> 
         </div>
@@ -928,7 +898,6 @@
             <div id="jsaListContainer"></div>
         </div>
 
-        <!-- 🆕 Tools Tab (Inserted) -->
         <div id="ToolsTab" class="tab-content">
             
             <!-- Tool Toggle Switch -->
@@ -974,7 +943,7 @@
                     <div class="heat-category" id="heatRiskLevel">--</div>
                     
                     <div class="heat-recommendations">
-                        <div style="font-weight:bold; margin-bottom:5px;">⚠️ Recommendations (Safety Handbook):</div>
+                        <div style="font-weight:bold; margin-bottom:5px;">⚠️ Recommendations (Saudi Aramco Safety Handbook, Section 4):</div>
                         <ul id="heatRecommendationsList">
                             <li>Enter temperature and humidity to see results.</li>
                         </ul>
@@ -1019,8 +988,13 @@
                     <li>Answer all the questions from the operator (الإجابة على أسئلة المتصل).</li>
                     <li>Don't Hang up till the operator tells you to do so (لا تُغلق الخط حتى يُطلب منك ذلك).</li>
                 </ol>
+                <!-- 🟢 New "Share My Location" Button -->
+                <button onclick="getGPSLocation()" style="width:100%; padding:12px; margin-top:10px; background-color:var(--secondary-color); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif; font-weight:bold;">
+                    <i class="fas fa-map-marker-alt"></i> Share My Location (GPS)
+                </button>
+                <div id="locationResult" style="margin-top:10px; font-size:13px; word-break:break-all;"></div>
             </div>
-             <!-- Other accordions preserved... -->
+            
              <button class="accordion" id="evacuationAccordion" data-color="var(--success-color)">
                 <i class="fas fa-door-open"></i> EVACUATION TIPS
             </button>
@@ -1112,7 +1086,6 @@
             <span class="nav-icon"><i class="fas fa-handshake"></i></span>
             <span>JSA</span>
         </div>
-        <!-- 🆕 Tools Tab Button (Was KPI) -->
         <div class="nav-button" data-color="var(--kpi-color)" onclick="openTab(event, 'ToolsTab')">
             <span class="nav-icon"><i class="fas fa-calculator"></i></span>
             <span>Tools</span>
@@ -1217,7 +1190,6 @@ const jsaData = [
 
 ];
 
-// 🆕 KPI Data & Logic
 const kpiData = [
     {
       id: 1, category: "Lagging", name: "TRIR (Total Recordable Incident Rate)", formula: "rate_200k",
@@ -1347,7 +1319,6 @@ function calculateKPI(id) {
     }
 }
 
-// 🆕 Tool Switching Logic
 function switchTool(toolName) {
     const btns = document.querySelectorAll('.tool-toggle-btn');
     const kpiSection = document.getElementById('kpiSection');
@@ -1370,7 +1341,7 @@ function switchTool(toolName) {
     }
 }
 
-// 🆕 Heat Stress Calculation Logic
+// 🟢 UPDATED: Heat Index Logic to match Aramco Safety Handbook (Section 4)
 function calculateHeatIndex() {
     const tInput = document.getElementById('inputTemp').value;
     const hInput = document.getElementById('inputHumidity').value;
@@ -1404,7 +1375,7 @@ function calculateHeatIndex() {
     valueEl.innerText = displayVal;
     resultCard.style.display = 'block';
 
-    // Categorization & Colors
+    // Categorization & Colors (Based on Saudi Aramco Safety Handbook Section 4)
     let riskLevel = "";
     let color = "";
     let recs = "";
@@ -1412,27 +1383,27 @@ function calculateHeatIndex() {
     if (HI_C < 27) {
         riskLevel = "LOW RISK (Safe)";
         color = "#27ae60"; // Green
-        recs = "<li>Basic hydration required.</li><li>Normal work activity.</li>";
+        recs = "<li>Hydration: Drink water when thirsty.</li><li>Activity: Normal work activity allowed.</li>";
     } else if (HI_C >= 27 && HI_C < 32) {
         riskLevel = "CAUTION";
         color = "#f1c40f"; // Yellow
-        resultCard.style.color = "#333"; // Dark text for yellow bg
-        recs = "<li>Drink water frequently.</li><li>Monitor for fatigue.</li>";
+        resultCard.style.color = "#333"; 
+        recs = "<li>Hydration: Drink water freely (Min 1 cup / 20 min).</li><li>Activity: Monitor for fatigue.</li>";
     } else if (HI_C >= 32 && HI_C < 41) {
         riskLevel = "EXTREME CAUTION";
         color = "#e67e22"; // Orange
         resultCard.style.color = "white";
-        recs = "<li>Drink 1 cup of water every 15-20 mins.</li><li>Take breaks in shade.</li><li>Watch for heat cramps.</li>";
+        recs = "<li>Hydration: 1 cup (250ml) every 15-20 mins.</li><li>Rest: Rest in shade if feeling strain.</li><li>Monitoring: Watch for heat cramps.</li>";
     } else if (HI_C >= 41 && HI_C < 54) {
         riskLevel = "DANGER";
         color = "#c0392b"; // Red
         resultCard.style.color = "white";
-        recs = "<li>Strict work/rest cycles enforced.</li><li>Limit strenuous work.</li><li>Check workers for heat exhaustion signs.</li>";
+        recs = "<li>Hydration: Strictly enforce 1 cup every 10-15 mins.</li><li>Work: Reschedule strenuous work to cooler times.</li><li>Monitoring: Check workers for heat exhaustion.</li>";
     } else {
         riskLevel = "EXTREME DANGER";
         color = "#2c3e50"; // Dark/Black
         resultCard.style.color = "white";
-        recs = "<li>STOP non-essential work.</li><li>High risk of Heat Stroke.</li><li>Emergency protocols in place.</li>";
+        recs = "<li>ACTION: STOP all non-essential work.</li><li>Risk: High risk of Heat Stroke.</li><li>Emergency: Implement emergency protocols immediately.</li>";
     }
 
     resultCard.style.backgroundColor = color;
@@ -1440,18 +1411,45 @@ function calculateHeatIndex() {
     listEl.innerHTML = recs;
 }
 
+// 🟢 NEW: GPS Location Function
+function getGPSLocation() {
+    const resultDiv = document.getElementById('locationResult');
+    resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
+    
+    if (!navigator.geolocation) {
+        resultDiv.innerHTML = "Geolocation is not supported by your browser.";
+        return;
+    }
 
-// 🛑 دالة فتح التابات (لم تتغير)
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude.toFixed(6);
+            const long = position.coords.longitude.toFixed(6);
+            const mapLink = `https://www.google.com/maps?q=${lat},${long}`;
+            
+            resultDiv.innerHTML = `
+                <div style="background:var(--accent-light); padding:10px; border-radius:5px; margin-top:5px;">
+                    <strong>Lat:</strong> ${lat} <br>
+                    <strong>Long:</strong> ${long} <br>
+                    <a href="${mapLink}" target="_blank" style="color:var(--primary-color); font-weight:bold;">
+                        <i class="fas fa-map-marked-alt"></i> Open in Google Maps
+                    </a>
+                </div>
+            `;
+        },
+        (error) => {
+            resultDiv.innerHTML = `Unable to retrieve location. Error: ${error.message}`;
+        }
+    );
+}
+
+
 function openTab(evt, tabName) {
     var tabcontent = document.getElementsByClassName("tab-content");
     var navbuttons = document.getElementsByClassName("nav-button");
     var targetButton = evt.currentTarget || document.querySelector(`.nav-button[onclick*="'${tabName}'"]`);
     var targetColor = targetButton ? targetButton.getAttribute('data-color') : null;
     
-    // Hide the floating button for all tabs EXCEPT FormTab (though we removed FormTab, it's safer to keep this logic)
-    // The button should be visible all the time in the new design. It's safe to keep it visible.
-    // document.getElementById('addObservationButton').style.display = (tabName === 'FormTab' ? 'none' : 'block');
-
     for (var i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove('active');
     
     for (var i = 0; i < navbuttons.length; i++) {
@@ -1490,7 +1488,6 @@ function showLeaderboardModal() {
 function renderLeaderboard() {
      const container = document.getElementById('leaderboardContainer');
      const sortedData = [...leaderboardData].sort((a, b) => b.points - a.points);
-     // ... (HTML table generation code remains the same)
      let tableHTML = '<table id="leaderboardTable"><thead><tr><th>Rank</th><th>Safety Officer Name</th><th>Points</th></tr></thead><tbody>';
 
     sortedData.forEach((item, index) => {
@@ -1520,31 +1517,25 @@ function hideEmergencyContactsModal() {
     document.getElementById('emergencyContactsModal').style.display = 'none';
 }
 
-// 🟢 دالة إغلاق Modal تأكيد JSA الجديدة (تم الحفاظ عليها بالرغم من عدم استخدامها الآن)
 function hideJSAConfirmationModal() {
     document.getElementById('jsaConfirmationModal').style.display = 'none';
 }
 
-// 🛑 الكود المصحح لإدارة ألوان الأكورديون (Accordion Click Handler)
 document.addEventListener('click', function(e) {
     const accordion = e.target.closest('.accordion');
     
     if (accordion) {
-        // إذا كان زر يفتح Modal (مثل Monthly Leaderboard و EMERGENCY CONTACTS)، لا نعالجه هنا
         if (accordion.onclick) return; 
 
         const isActive = accordion.classList.contains('activeAcc');
         const color = accordion.getAttribute('data-color');
         let panel = accordion.nextElementSibling;
 
-        // 1. إعادة ضبط الألوان والحالة لجميع الأكورديونات غير الخاصة بالـ Modal وغير JSA
         document.querySelectorAll('.accordion').forEach(acc => {
-            // نتحقق من فئة 'jsa-accordion-item' أيضاً لعدم تدخل أكورديون InfoTab مع JSA
             if (!acc.onclick && !acc.classList.contains('jsa-accordion-item')) { 
                  acc.classList.remove('activeAcc');
                  acc.style.backgroundColor = ''; 
                  acc.style.color = ''; 
-                 // إزالة الـ inline style الخاص بـ border-color إذا كان موجوداً
                  if(acc.nextElementSibling && acc.nextElementSibling.classList.contains('panel')) {
                      acc.nextElementSibling.style.display = 'none';
                      acc.nextElementSibling.style.color = ''; 
@@ -1552,20 +1543,16 @@ document.addEventListener('click', function(e) {
             }
         });
         
-        // 2. تفعيل الأكورديون الحالي وتطبيق الألوان
         if (!isActive && !accordion.classList.contains('jsa-accordion-item')) {
             accordion.classList.add('activeAcc');
             
-            // تطبيق اللون المخصص على زر الأكورديون
             if (color) {
-                // نستخدم اللون المخصص كخلفية، ونقلب لون النص إلى أبيض
                 accordion.style.backgroundColor = color;
                 accordion.style.color = 'white'; 
             }
             
             if(panel && panel.classList.contains('panel')) {
                  panel.style.display = 'block';
-                 // تطبيق اللون على Panel (لأجل border-left والنقاط)
                  if (color) {
                      panel.style.color = color;
                  }
@@ -1576,37 +1563,29 @@ document.addEventListener('click', function(e) {
 function loadTBTOfTheDay() {
     const tbtPanel = document.getElementById('tbtPanel');
     const tbtAccordion = document.getElementById('tbtAccordion');
-    const defaultIcon = "fas fa-book-open"; // أيقونة افتراضية للـ TBT
+    const defaultIcon = "fas fa-book-open";
     
     if (!tbtPanel || !tbtAccordion || tbtData.length === 0) return;
     
-    // حساب مؤشر TBT لهذا اليوم بناءً على رقم اليوم في السنة
     const today = new Date();
     const startOfYear = new Date(today.getFullYear(), 0, 0);
     const diff = today - startOfYear;
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
     
-    // استخدام معامل القسمة للتكرار على قائمة TBTs
     const index = dayOfYear % tbtData.length;
-    const tbt = tbtData[index]; // الآن tbt تحتوي على { title, link }
+    const tbt = tbtData[index];
     
-    // تحديد اللون الأساسي للـ TBT Panel والـ link
     const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
     
-    
-    // 1. تحديث عنوان الأكورديون والرمز
     tbtAccordion.innerHTML = `<i class="${defaultIcon}"></i> ${tbt.title}`;
     
-    // 2. بناء محتوى اللوحة (Panel) مع الرابط المطلوب
     tbtPanel.innerHTML = `
-        <p style="margin-top:0; color:var(--text-muted); font-size:14px;">Tap the link below to open the daily documenfoodt.</p>
+        <p style="margin-top:0; color:var(--text-muted); font-size:14px;">Tap the link below to open the daily document.</p>
         <a href="${tbt.link}" target="_blank" style="color:${linkColor}; font-weight:bold; text-decoration:none; display:block; margin-top:10px; font-size:15px;">
             🔗 Open: ${tbt.title}
         </a>
     `;
-    
-    // لضمان أن لون الـ border-left الخاص بالـ panel يتطابق مع الـ primary-color
     tbtPanel.style.color = linkColor;
 }
 
@@ -1670,10 +1649,9 @@ function fetchEOMData(forceRender = false) {
         });
 }
 
-// 🟢 التعديل الثالث: تعديل دالة JSA List لإنشاء أكورديون داخلي
 function renderJSAList(data) {
     const container = document.getElementById('jsaListContainer');
-    container.innerHTML = ''; // Clear existing list
+    container.innerHTML = ''; 
     const jsaColor = getComputedStyle(document.documentElement).getPropertyValue('--jsa-color');
 
     if (data.length === 0) {
@@ -1682,20 +1660,14 @@ function renderJSAList(data) {
     }
 
     data.forEach(item => {
-        // 1. إنشاء زر الأكورديون (الرأس)
         const button = document.createElement('button');
-        // نستخدم 'accordion' ولكن بفئة 'jsa-accordion-item' لتمييزه
         button.className = 'accordion jsa-accordion-item'; 
         button.setAttribute('data-color', jsaColor);
-        // نستخدم <i> عادية هنا لتطبق عليها أنماط .jsa-accordion-item i 
         button.innerHTML = `<i class="fas fa-file-pdf"></i> ${item.title}`; 
         
-        // 2. إنشاء محتوى الأكورديون (الـ panel)
         const panel = document.createElement('div');
-        // نستخدم 'panel' ولكن بفئة 'jsa-panel' لتمييزه
         panel.className = 'panel jsa-panel'; 
         
-        // 3. بناء الرابط داخل قائمة داخل الـ panel
         panel.innerHTML = `
             <ul>
                 <li>
@@ -1709,12 +1681,9 @@ function renderJSAList(data) {
         container.appendChild(button);
         container.appendChild(panel);
 
-        // 4. إضافة معالج الحدث (Event Listener) لتشغيل وظيفة الأكورديون
         button.addEventListener('click', function() {
-            // نستخدم نفس منطق الأكورديون ولكن نحدده على فئة jsa-accordion-item فقط
             const isActive = this.classList.contains('activeAcc');
             
-            // إعادة ضبط الألوان والحالة لجميع الأكورديونات JSA غير النشطة
             document.querySelectorAll('.jsa-accordion-item').forEach(acc => {
                  if (acc !== this) {
                      acc.classList.remove('activeAcc');
@@ -1726,13 +1695,12 @@ function renderJSAList(data) {
                  }
             });
 
-            // تفعيل أو إلغاء تفعيل العنصر الحالي
             if (!isActive) {
                 this.classList.add('activeAcc');
                 this.style.backgroundColor = jsaColor;
                 this.style.color = 'white';
                 panel.style.display = 'block';
-                panel.style.color = jsaColor; // لضبط لون الخط الجانبي والنقاط
+                panel.style.color = jsaColor;
             } else {
                 this.classList.remove('activeAcc');
                 this.style.backgroundColor = '';
@@ -1746,7 +1714,7 @@ function renderJSAList(data) {
 function filterJSAList() {
     const searchTerm = document.getElementById('jsaSearch').value.toLowerCase().trim();
     if (!searchTerm) {
-        renderJSAList(jsaData); // Show all if no search term
+        renderJSAList(jsaData);
         return;
     }
 
@@ -1757,29 +1725,24 @@ function filterJSAList() {
     renderJSAList(filteredData);
 }
 
-// 🆕 دالة تبديل الوضع (Dark/Light Mode)
 function toggleDarkMode() {
     const body = document.body;
     const isDarkMode = body.classList.toggle('dark-mode');
     const modeIcon = document.getElementById('modeIcon');
     
-    // تحديث الأيقونة والنص
     if (modeIcon) {
         modeIcon.classList.remove(isDarkMode ? 'fa-sun' : 'fa-moon');
         modeIcon.classList.add(isDarkMode ? 'fa-moon' : 'fa-sun');
     }
     
-    // حفظ التفضيل (اختياري، لكن يوصى به)
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
-    // لإعادة تطبيق الألوان على العناصر التي تستخدم inline style أو ترث من body/root
-    renderJSAList(jsaData); // إعادة رسم قائمة JSA لضبط ألوانها
-    loadTBTOfTheDay(); // إعادة تحميل TBT لضبط لونه
+    renderJSAList(jsaData);
+    loadTBTOfTheDay();
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 🆕 تطبيق التفضيل المحفوظ عند التحميل
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -1791,11 +1754,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
          const modeIcon = document.getElementById('modeIcon');
          if (modeIcon) {
-             modeIcon.classList.add('fa-sun'); // Default icon for Light Mode
+             modeIcon.classList.add('fa-sun'); 
          }
     }
 
-    // 🛑 تطبيق اللون المخصص للزر النشط افتراضيًا عند تحميل الصفحة
     const infoButton = document.querySelector('.nav-button[onclick*="InfoTab"]');
     if(infoButton) {
         document.getElementById('InfoTab').classList.add('active');
@@ -1816,20 +1778,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (eomCard) eomCard.addEventListener('click', showLeaderboardModal);
 
     window.addEventListener('click', (event) => {
-         // 🟢 إضافة Modal تأكيد JSA لآلية الإغلاق
          if (event.target == leaderboardModal) hideLeaderboardModal();
          if (event.target == emergencyModal) hideEmergencyContactsModal();
          if (event.target == jsaConfirmationModal) hideJSAConfirmationModal();
     });
     
-    // 🟢 إضافة معالج حدث لزر التأكيد داخل Modal الـ JSA (تم إبقاؤه لكنه لن يُستخدم الآن)
     document.getElementById('driveLinkConfirm').addEventListener('click', () => {
-        // نغلق الـ modal بعد الضغط على الرابط (لأنه سيفتح في نافذة جديدة)
         hideJSAConfirmationModal();
     });
 
 
-    // Set the current Month and Year
     const now = new Date();
     const options = { month: 'long', year: 'numeric' };
     const currentMonthYear = now.toLocaleDateString('en-US', options);
@@ -1838,15 +1796,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cardTitleElement.innerHTML = `<i class="fas fa-trophy" style="color: #FFD700;"></i> Employee of the Month (${currentMonthYear})`;
     }
 
-    // --- Employee of the Month/Leaderboard Data Fetch ---
     fetchEOMData();
     loadTBTOfTheDay();
-    // --- JSA Tab Initialization ---
     renderJSAList(jsaData);
     document.getElementById('jsaSearch').addEventListener('input', filterJSAList);
 
 
-    // --- Load News from Google Sheet (Code remains the same) ---
     const newsSheetUrl = 'https://docs.google.com/spreadsheets/d/1_SwxL5f4mWF5kd2yofCMCEE_WQp_2eroHDhXXPXtw1U/export?format=csv&gid=0';
     fetch(newsSheetUrl)
         .then(res => res.text())
@@ -1899,7 +1854,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading news:', err);
         });
     
-    // 🆕 Initialize KPIs
     renderKPIs();
 });
 </script>
