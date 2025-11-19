@@ -1,211 +1,1920 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <base target="_top">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>Safety Observations App</title>
-  <style>
-    body { font-family: 'Arial', sans-serif'; margin:0; padding:0; background-color:#e9e9e9; height:100vh; overflow:hidden; }
-    .app-container { display:flex; flex-direction:column; height:100%; max-width:500px; margin:0 auto; background-color:white; box-shadow:0 0 15px rgba(0,0,0,0.2);}
-    .header { text-align:center; padding:15px; font-size:18px; font-weight:bold; background-color:#333; color:white; border-bottom:1px solid #FF8C00; }
-    .content-area { flex-grow:1; overflow-y:auto; margin-bottom:60px; }
-    .tab-content { padding:10px 12px; display:none; height:100%; }
-    .tab-content.active { display:block; }
-    iframe { width:100%; height:100%; border:none; min-width:100%; background-color:transparent; }
-    /* News card */
-    #NewsTab { padding:10px; background-color:#f4f4f4; }
-    .announcement-card { background-color:white; border-radius:8px; margin-bottom:12px; padding:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1); border-right:5px solid #FF8C00; display:flex; flex-direction:column; }
-    .card-title { font-weight:bold; color:#333; font-size:16px; margin-bottom:5px; }
-    .card-date { font-size:10px; color:#888; margin-bottom:10px; border-bottom:1px dashed #eee; padding-bottom:5px; }
-    .card-content { font-size:13px; color:#555; }
-    /* Info tab */
-    .info-month { font-size:18px; font-weight:bold; margin:8px 0 14px 0; }
-    .accordion { background-color:#f0f0f0; color:#222; cursor:pointer; padding:12px; width:100%; text-align:left; border:none; outline:none; transition:0.25s; font-size:15px; border-radius:6px; font-weight:700;}
-    .accordion:hover, .accordion.activeAcc { background-color:#e0e0e0; }
-    .panel { padding:12px 14px; display:none; background-color:white; overflow:auto; border-left:4px solid #FF8C00; margin-top:8px; border-radius:6px; }
-    .panel ol { padding-left:20px; margin:0; line-height:1.6; font-size:14px; color:#333; }
-    .panel li { margin-bottom:6px; }
-    /* Nav Bar */
-    .nav-bar { display:flex; justify-content:space-around; position:fixed; bottom:0; width:100%; max-width:500px; height:60px; background-color:white; box-shadow:0 -5px 15px rgba(0,0,0,0.15); z-index:10; left:50%; transform:translateX(-50%); }
-    .nav-button { display:flex; flex-direction:column; align-items:center; justify-content:center; color:#777; font-size:11px; cursor:pointer; width:20%; transition:color 0.3s; }
-    .nav-button.active { color:#FF8C00; font-weight:bold; }
-    .nav-button:hover { color:#FF8C00; }
-    .nav-icon { font-size:20px; margin-bottom:3px; }
-    .icon-news::before { content:"📰"; }
-    .icon-form::before { content:"📝"; }
-    .icon-data::before { content:"📊"; }
-    .icon-tasks::before { content:"✅"; }
-    .icon-info::before { content:"ℹ️"; }
-    @media(min-width:600px){ .app-container{ max-width:1000px; box-shadow:0 0 25px rgba(0,0,0,0.3); height:90vh; margin-top:5vh; margin-bottom:5vh; border-radius:12px; overflow:hidden; } .nav-bar{max-width:1000px;} .nav-button span{font-size:14px;} .nav-icon{font-size:24px;} .announcement-card{max-width:800px; margin-left:auto; margin-right:auto;} }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="https://drive.google.com/uc?export=view&id=1pT2_mI_B9CrnOde6YK__OzBd2gYEppXy">
+    <link rel="icon" type="image/png" href="https://drive.google.com/uc?export:view&id=1pT2_mI_B9CrnOde6YK__OzBd2gYEppXy">
+    <title>My Observations App 👷🏻‍♂️</title>
+    <style>
+        /* 🟢 3. توحيد الألوان باستخدام متغيرات CSS */
+        :root {
+          /* Light Mode Colors (Defaults) */
+          --primary-color: #FF6F00; /* Darker, richer orange */
+          --secondary-color: #2C3E50; /* Dark blue/almost black */
+          --accent-light: #ECF0F1; /* Light grey for subtle backgrounds */
+          --text-muted: #7F8C8D; /* Muted grey for secondary text */
+          --border-color: #BDC3C7; /* Light grey for borders */
+          --success-color: #27AE60; /* Green for success/positive */
+          --danger-color: #C0392B; /* Red for danger/emergency */
+          --jsa-color: #3498DB; /* Blue for JSA tab */
+          --kpi-color: #8e44ad; /* 🆕 Purple for KPI tab */
+          --heat-color: #e67e22; /* 🆕 Orange for Heat Stress */
+          --background-color: #FFFFFF; /* Main white background */
+          --body-background-color: var(--accent-light); /* Off-white for body */
+          --text-color: #2C3E50; /* Main text color */
+          --card-background: #FFFFFF; /* Card/Panel background */
+          --modal-background: #fefefe; /* Modal content background */
+          --hover-background: #E0E5E9; /* Hover on accordion/button */
+          --header-background-color: red; /* 🆕 خلفية الهيدر في الوضع الفاتح */
+          
+          /* Dark Mode Colors (Custom Properties) */
+          --dark-bg: #1e1e1e;
+          --dark-card-bg: #2d2d2d;
+          --dark-text: #f0f0f0;
+          --dark-muted-text: #a0a0a0;
+          --dark-border: #444444;
+          --dark-hover-bg: #3c3c3c;
+
+
+          /* متغيرات العرض الافتراضية للجوال */
+          --app-max-width: 500px;
+          --app-height: 90vh;
+          --app-margin: 0 auto;
+        }
+
+        /* 🌙 Dark Mode Override */
+        .dark-mode {
+            --background-color: var(--dark-card-bg); 
+            --body-background-color: var(--dark-bg);
+            --text-color: var(--dark-text);
+            --text-muted: var(--dark-muted-text); 
+            --border-color: var(--dark-border);
+            --card-background: var(--dark-card-bg);
+            --accent-light: var(--dark-hover-bg); 
+            --modal-background: var(--dark-card-bg);
+            --secondary-color: var(--dark-text); /* Use light text color for secondary elements (e.g. header text) */
+            --hover-background: var(--dark-hover-bg);
+            --app-container-shadow: 0 8px 20px rgba(255,255,255,0.05); /* Lighter shadow for dark mode */
+            --header-background-color: #1a1a1a; /* 🛑 خلفية الهيدر الداكنة */
+        }
+
+
+        /* ======================================= */
+        /* === القواعد الافتراضية (الجوال أولاً) === */
+        /* ======================================= */
+
+        body {
+            font-family: 'Lato', sans-serif; /* Body text font */
+            margin:0;
+            padding:0;
+            background-color:var(--body-background-color); /* متغير جديد */
+            height:100vh;
+            overflow:hidden;
+            color: var(--text-color); /* لون النص الافتراضي */
+            transition: background-color 0.3s, color 0.3s; /* لتنعيم الانتقال */
+        }
+        .app-container {
+            display:flex;
+            flex-direction:column;
+            height: var(--app-height);
+            max-width: var(--app-max-width); /* حجم الجوال */
+            margin: var(--app-margin);
+            background-color:var(--background-color); /* متغير جديد */
+            box-shadow:var(--app-container-shadow, 0 8px 20px rgba(0,0,0,0.1)); /* متغير جديد */
+            border-radius: 12px; /* More rounded corners */
+            overflow: hidden; /* لمنع بروز العناصر خارج الحدود */
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .header {
+            text-align:center;
+            padding:20px 20px; /* Slightly more padding */
+            font-family: 'Poppins', sans-serif; /* Heading font */
+            font-size:20px; /* Slightly larger */
+            font-weight:700; /* Heavier weight for impact */
+            background-color:var(--header-background-color); /* 🛑 تم التعديل هنا */
+            color:white;
+            border-bottom:3px solid var(--primary-color); /* Thicker accent line */
+            position: relative; /* For the gradient effect */
+            overflow: hidden;
+        }
+        /* Gradient overlay for header */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* نستخدم نفس الألوان ولكن بشفافية */
+            background: linear-gradient(135deg, rgba(255,111,0,0.1) 0%, var(--secondary-color, rgba(44,62,80,0.1)) 100%);
+            z-index: 0;
+        }
+        .header span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-area {
+            flex-grow:1;
+            overflow-y:auto;
+            /* 🟢 التعديل الأول: زيادة الهامش السفلي لمنع تغطية الزر العائم للمحتوى */
+            margin-bottom:135px; /* كانت 65px */
+            padding: 15px; /* Add some general padding for content */
+        }
+        .tab-content {
+            display:none;
+            height:100%;
+            box-sizing: border-box; /* لحساب الـ padding داخل الـ height */
+        }
+        .tab-content.active {
+            display:block;
+        }
+        /* ارتفاع الإطارات: يعتمد على ارتفاع التاب */
+        iframe {
+            width:100%;
+            height:calc(100% - 0px); /* Adjust for content-area padding */
+            border:none;
+            border-radius: 8px; /* Rounded corners for iframes */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Subtle shadow for iframes */
+        }
+        /* ارتفاع محتوى المعلومات */
+        #InfoTab, #ToolsTab {
+            overflow-y:auto;
+            max-height:calc(100% - 0px); /* Adjust for content-area padding */
+            padding-bottom:100px;
+        }
+
+        /* 🟢 2. تعديل بطاقة الأخبار لـ UX */
+        .announcement-card {
+            background-color:var(--card-background); /* متغير جديد */
+            border-radius:10px; /* More rounded */
+            margin-bottom:15px; /* More space */
+            padding:18px; /* More padding */
+            box-shadow:0 4px 10px rgba(0,0,0,0.08); /* Softer shadow */
+            border-left:6px solid var(--primary-color); /* Thicker accent border */
+            cursor:pointer;
+            position: relative;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s;
+        }
+        .dark-mode .announcement-card {
+            box-shadow:0 4px 10px rgba(255,255,255,0.05);
+        }
+        .announcement-card:hover {
+            transform: translateY(-3px);
+            box-shadow:0 6px 15px rgba(0,0,0,0.12);
+        }
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight:600;
+            color:var(--text-color); /* متغير جديد */
+            font-size:17px;
+            padding-right: 35px; /* Space for icon */
+            position: relative;
+            text-align: left; /* Align title to left */
+        }
+        .card-date {
+            font-size:11px;
+            color:var(--text-muted);
+            margin-bottom:12px;
+            border-bottom:1px solid var(--border-color); /* Lighter border */
+            padding-bottom:8px;
+            text-align: left; /* Align date to left */
+        }
+        .card-content {
+            font-size:14px;
+            color:var(--text-color); /* متغير جديد */
+            display:none;
+            text-align:justify;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dotted var(--border-color);
+            line-height: 1.6; /* Better readability */
+        }
+        .card-title .toggle-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            transition: transform 0.3s ease-in-out;
+            font-size: 16px;
+        }
+        .card-title.open .toggle-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        /* نهاية تعديل بطاقة الأخبار */
+
+        .info-month {
+            font-family: 'Poppins', sans-serif;
+            font-size:19px;
+            font-weight:700;
+            margin:10px 0 16px 0;
+            text-align:center;
+            color: var(--text-color); /* متغير جديد */
+        }
+        .accordion {
+            background-color:var(--accent-light);
+            color:var(--text-color); /* اللون الافتراضي للنص */
+            cursor:pointer;
+            padding:15px 18px; /* More padding */
+            width:100%;
+            text-align:left;
+            border:none;
+            outline:none;
+            /* 🔴 مهم: يجب أن تكون Transition على color و background-color */
+            transition:background-color 0.3s ease, transform 0.2s ease, color 0.3s ease; 
+            font-family: 'Lato', sans-serif;
+            font-size:15px;
+            border-radius:8px; /* More rounded */
+            font-weight:700;
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+        .accordion:hover {
+            background-color:var(--hover-background); /* متغير جديد */
+            transform: translateY(-2px);
+        }
+        /* 🛑 التعديل هنا: عند تفعيل الأكورديون - سيتم تجاوزه بالـ JS لتطبيق اللون الديناميكي */
+        .accordion.activeAcc {
+            /* سنعتمد على inline style في JS */
+            transform: translateY(-2px);
+        }
+        
+        /* 🛑 التعديل هنا: الرمز يرث لون النص (والذي سيصبح أبيض عند التفعيل) */
+        .accordion i {
+            margin-inline-end: 12px; /* More space */
+            font-size: 19px; /* Slightly larger icon */
+            /* الرمز يرث اللون من الأب */
+            color: inherit !important; 
+            transition: color 0.3s ease;
+        }
+        /* تعديل خاص لزر الطوارئ */
+        #emergencyAccordion {
+            /* سنعتمد على data-color=danger-color أو #FF0000 */
+            border: 2px solid var(--danger-color);
+        }
+        #emergencyAccordion:hover {
+            background-color: var(--danger-color);
+            color: white;
+            border-color: var(--danger-color);
+        }
+        /* الألوان عند تفعيل زر الطوارئ */
+        #emergencyAccordion.activeAcc {
+            background-color: var(--danger-color) !important;
+            color: white !important;
+            border-color: var(--danger-color);
+        }
+
+
+        .panel {
+            padding:15px 18px; /* More padding */
+            display:none;
+            background-color:var(--card-background); /* متغير جديد */
+            overflow-y:auto;
+            /* 🛑 التعديل هنا: الخط الجانبي يرث اللون المخصص */
+            border-left:5px solid currentColor; 
+            margin-top:10px;
+            border-radius:0 8px 8px 0; /* Only right/bottom rounded for accent */
+            max-height:500px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .dark-mode .panel {
+             box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+        }
+        .panel ul, .panel ol {
+            padding-left: 28px; /* Adjust padding for list items */
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        .panel ul li, .panel ol li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            color: var(--text-color); /* متغير جديد */
+        }
+/* (بقية أنماط القوائم كما هي) */
+/* (تكملة أنماط CSS من الجزء الأول) */
+
+        /* 🛠️ التعديل هنا: تطبيق النقاط البرتقالية فقط على القوائم غير المرقمة (<ul>) */
+        .panel ul li:before {
+            content:"\2022";
+            /* 🛑 التعديل هنا: النقاط ترث لون الأكورديون النشط */
+            color: currentColor; 
+            font-weight:bold;
+            display:inline-block;
+            width:1em;
+            margin-left: -1em;
+        }
+
+        /* 🆕 إعادة تفعيل الترقيم الافتراضي للقوائم المرقمة (<ol>) بدون نقاط إضافية */
+        .panel ol {
+            list-style-type: decimal; /* للتأكد من استخدام الأرقام 1, 2, 3... */
+            padding-left: 25px; /* لإعطاء مساحة للترقيم الافتراضي */
+            margin-top: 5px;
+        }
+        .panel ol li {
+            list-style-type: decimal;
+            margin-bottom: 5px;
+        }
+        /* نهاية تعديل القوائم */
+        
+        /* ======================================= */
+        /* === أنماط الأكورديون الخاص بـ JSA (جديد) === */
+        /* ======================================= */
+
+        /* نستخدم نفس أنماط .accordion و .panel ولكن بفئة مختلفة لضمان الفصل */
+        .jsa-accordion-item {
+            /* يرث كل أنماط .accordion */
+            cursor:pointer;
+            padding:15px 18px; 
+            width:100%;
+            text-align:left;
+            border:none;
+            outline:none;
+            transition:background-color 0.3s ease, transform 0.2s ease, color 0.3s ease; 
+            font-family: 'Lato', sans-serif;
+            font-size:15px;
+            border-radius:8px; 
+            font-weight:700;
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            /* أنماط خاصة به */
+            background-color: var(--accent-light);
+            color: var(--text-color); /* متغير جديد */
+        }
+        .jsa-accordion-item:hover {
+            background-color:var(--hover-background); /* متغير جديد */
+            transform: translateY(-2px);
+        }
+        .jsa-accordion-item i {
+            margin-inline-end: 12px;
+            font-size: 19px;
+            color: inherit !important; 
+            transition: color 0.3s ease;
+        }
+        /* تفعيل الأكورديون (تم تركه للتحكم بواسطة JS) */
+        .jsa-accordion-item.activeAcc {
+            transform: translateY(-2px);
+        }
+
+
+        .jsa-panel {
+            /* يرث كل أنماط .panel */
+            padding:15px 18px; 
+            display:none;
+            background-color:var(--card-background); /* متغير جديد */
+            overflow-y:auto;
+            border-left:5px solid currentColor; /* مهم: ليرث اللون */
+            margin-top:8px;
+            border-radius:0 8px 8px 0; 
+            max-height:500px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+
+        /* تعديل النقاط لـ JSA Panel */
+        .jsa-panel ul li:before {
+            content:"\2022";
+            color: currentColor; 
+            font-weight:bold;
+            display:inline-block;
+            width:1em;
+            margin-left: -1em;
+        }
+        /* نهاية أنماط أكورديون JSA */
+        
+
+        /* === شريط التنقل - الألوان المخصصة و التحسينات === */
+        .nav-bar {
+            display:flex;
+            justify-content:space-around;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            max-width: var(--app-max-width); /* يتبع العرض الأقصى للحاوية */
+            height:65px; /* Slightly taller nav bar */
+            background-color:var(--card-background); /* متغير جديد */
+            box-shadow:0 -5px 20px rgba(0,0,0,0.1); /* Softer shadow upwards */
+            z-index:10;
+            left:50%;
+            transform:translateX(-50%);
+            border-radius: 0 0 12px 12px; /* Match app container corners */
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .dark-mode .nav-bar {
+            box-shadow:0 -5px 20px rgba(255,255,255,0.05);
+        }
+
+        .nav-button {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            color:var(--text-muted); /* Muted color for inactive */
+            font-size:10px; /* 🆕 Smaller font to fit 6 buttons */
+            cursor:pointer;
+            width: 16.66%; /* 🆕 6 buttons = 16.66% each */
+            transition:color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            font-family: 'Lato', sans-serif;
+            font-weight: 600;
+            padding: 0 2px; /* Prevent text wrapping issues */
+            text-align: center;
+        }
+        
+        /* 🛑 التعديل هنا: نعتمد على JavaScript لتطبيق لون الزر النشط */
+        .nav-button.active { 
+             /* لون الزر (النص) سيتم تحديده في JavaScript باستخدام data-color */
+             font-weight:bold; 
+             /* نستخدم اللون الحالي للزر النشط كخلفية للخط العلوي */
+             color: inherit; 
+        }
+
+        /* 🟢 2. إضافة خط علوي للزر النشط */
+        .nav-button.active::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; /* Thicker accent line */
+            /* نستخدم "currentColor" ليرث لون الزر النشط (الأخضر، الأصفر، إلخ) */
+            background-color: currentColor; 
+            border-radius: 0 0 5px 5px;
+        }
+
+        .nav-button:hover { color:var(--primary-color); transform: translateY(-3px); }
+        .nav-icon { 
+            font-size:20px; /* Slightly smaller to fit */
+            margin-bottom:4px; 
+            /* نستخدم "currentColor" لكي يرث الرمز لون الزر الأب (.nav-button) */
+            color: currentColor; 
+        } 
+        
+        /* 🟢 4. مؤشر التحميل (Spinner) */
+        .loading-spinner {
+            display: flex; justify-content: center; align-items: center; padding: 25px; color: var(--primary-color); font-size: 18px;
+            font-weight: bold;
+        }
+        .loading-spinner i { margin-right: 10px; font-size: 24px; }
+
+        /* MODAL STYLES */
+        .modal {
+            display: none; position: fixed; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(0,0,0,0.6); 
+            padding-top: 60px;
+            animation: fadeIn 0.3s ease-out; 
+        }
+        .modal-content {
+            background-color: var(--modal-background); /* متغير جديد */
+            margin: 5% auto; padding: 25px; border: none; 
+            width: 90%; max-width: 450px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            position: relative;
+            animation: slideIn 0.3s ease-out; 
+            transition: background-color 0.3s;
+            color: var(--text-color); /* لضمان أن النص يتبع وضع الألوان */
+        }
+        .close-btn {
+            color: var(--text-muted); float: right; font-size: 30px; font-weight: bold; cursor: pointer;
+            position: absolute; top: 15px; right: 20px;
+        }
+        .close-btn:hover, .close-btn:focus { color: var(--danger-color); text-decoration: none; }
+        #leaderboardTable { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #leaderboardTable th, #leaderboardTable td { border: 1px solid var(--border-color); padding: 10px; text-align: left; font-size: 14px; }
+        #leaderboardTable th { background-color: var(--accent-light); color: var(--secondary-color); text-align: center; font-family: 'Poppins', sans-serif; font-weight: 700; }
+        #emergencyContactsModal .modal-content { max-width: 700px; } 
+        #emergencyContactsModal table th, #emergencyContactsModal table td { font-size: 13.5px; text-align: center; }
+        #emergencyContactsModal table td:nth-child(1), #emergencyContactsModal table td:nth-child(2) { text-align: left; }
+        #emergencyContactsModal table a { text-decoration: none; color: var(--danger-color); font-weight: bold; transition: color 0.2s ease; }
+        #emergencyContactsModal table a:hover { color: var(--secondary-color); }
+        #emergencyContactsModal h2 { color: var(--danger-color); font-family: 'Poppins', sans-serif; }
+        #emergencyContactsModal h3 { color: var(--secondary-color); font-family: 'Poppins', sans-serif; }
+
+
+        /* 🆕 CSS for Floating Button (Add New Observation) */
+        #addObservationButton {
+            position: fixed;
+            bottom: 85px; /* Adjust based on nav-bar height (65px) + desired gap */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15; /* Above nav bar but below modals */
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px; /* Fully rounded */
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: var(--app-max-width); /* To limit its width within the app container */
+            width: calc(100% - 60px); /* Adjust width to fit the container with margin */
+            justify-content: center;
+        }
+        #addObservationButton:hover {
+            background-color: #E86A00; /* Slightly darker orange */
+            transform: translateX(-50%) scale(1.03);
+        }
+        /* End Floating Button CSS */
+        
+        /* 🆕 CSS for JSA Tab Search Bar & KPI Inputs */
+        #jsaSearch, .kpi-input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s, color 0.3s;
+            background-color: var(--card-background); /* متغير جديد */
+            color: var(--text-color); /* متغير جديد */
+        }
+        #jsaSearch:focus, .kpi-input-field:focus {
+            border-color: var(--jsa-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            outline: none;
+        }
+        .dark-mode #jsaSearch, .dark-mode .kpi-input-field {
+             /* لإظهار الـ placeholder في الـ Dark Mode */
+             color: var(--dark-text);
+        }
+        
+        /* 🆕 KPI Card Styles (Based on Announcement Card) */
+        .kpi-card {
+            background-color: var(--card-background);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-left: 6px solid var(--kpi-color);
+            transition: transform 0.2s ease, background-color 0.3s;
+        }
+        .dark-mode .kpi-card {
+            box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+        }
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .kpi-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 16px;
+            margin: 0;
+        }
+        .kpi-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .kpi-badge.leading { background-color: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .kpi-badge.lagging { background-color: rgba(241, 196, 15, 0.2); color: #f39c12; }
+        
+        .kpi-inputs {
+            background-color: var(--accent-light);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .kpi-input-group {
+            margin-bottom: 10px;
+        }
+        .kpi-input-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .kpi-input-field {
+            margin-bottom: 0; /* Override default */
+            padding: 8px;
+            font-size: 14px;
+        }
+        .kpi-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+        }
+        .kpi-result-box {
+            text-align: center;
+        }
+        .kpi-result-label { font-size: 11px; color: var(--text-muted); }
+        .kpi-result-value { font-size: 20px; font-weight: 700; font-family: 'Poppins', sans-serif; }
+        .kpi-citation { font-size: 10px; color: var(--text-muted); margin-top: 8px; font-style: italic; }
+        
+        /* Result Colors */
+        .text-good { color: var(--success-color); }
+        .text-bad { color: var(--danger-color); }
+        .text-neutral { color: var(--text-muted); }
+
+        /* 🆕 Tool Toggle (KPI vs Heat Stress) */
+        .tool-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: var(--accent-light);
+            border-radius: 25px;
+            padding: 4px;
+        }
+        .tool-toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+        .tool-toggle-btn.active-tool {
+            background-color: var(--kpi-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        /* Separate color for Heat Stress active state */
+        .tool-toggle-btn.active-tool[data-tool="heat"] {
+            background-color: var(--heat-color);
+        }
+        
+        /* 🆕 Heat Stress Result Card */
+        #heatIndexResultCard {
+            display: none;
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .heat-value {
+            font-size: 42px;
+            font-weight: 800;
+            margin: 10px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .heat-category {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        .heat-recommendations {
+            font-size: 14px;
+            background-color: rgba(0,0,0,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .heat-recommendations ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .heat-recommendations li {
+            margin-bottom: 5px;
+        }
+
+        
+        /* ------------------------------------- */
+        /* 🟢 أنماط النافذة المنبثقة لتأكيد JSA */
+        /* ------------------------------------- */
+        #jsaConfirmationModal .modal-content {
+            margin: 15% auto; 
+            padding: 20px;
+            width: 90%; 
+            max-width: 400px; 
+            text-align: center;
+        }
+        #jsaConfirmationModal h2 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--jsa-color);
+            margin-top: 0;
+        }
+        #jsaConfirmationModal p {
+            color: var(--text-color); /* متغير جديد */
+            font-size: 15px;
+            margin: 20px 0;
+        }
+        .drive-button {
+            display: block;
+            padding: 12px 20px;
+            margin-top: 25px;
+            background-color: var(--jsa-color); 
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .drive-button:hover {
+            background-color: #2980b9;
+        }
+        
+        
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+
+        /* ======================================= */
+        /* 🆕 أنماط زر تبديل الوضع (Dark/Light Mode) */
+        /* ======================================= */
+        .mode-toggle {
+            position: absolute;
+            top: 25px;
+            right: 20px; 
+            cursor: pointer;
+            color: white; /* Always white on the dark header */
+            font-size: 20px;
+            transition: transform 0.2s;
+            z-index: 2;
+        }
+        .mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ======================================= */
+        /* === استعلام الوسائط لشاشات الكمبيوتر === */
+        /* ======================================= */
+        @media (min-width: 768px) {
+            /* تغيير المتغيرات الخاصة بالعرض لشاشة الكمبيوتر */
+            :root {
+                --app-max-width: 1000px; 
+                --app-height: 95vh;
+                --app-margin: 2.5vh auto;
+            }
+
+            /* ضبط ارتفاع الإطارات لتناسب الحاوية الأكبر */
+            iframe {
+                height: 100%;
+            }
+
+            /* ضبط ارتفاع محتوى المعلومات */
+             #InfoTab, #ToolsTab {
+                height: 100%;
+                max-height: 100%;
+                padding-bottom: 80px; 
+            }
+
+            /* مساحة المحتوى */
+             /* 🟢 التعديل الأول: تطبيق الهامش الإضافي على الكمبيوتر أيضاً */
+            .content-area {
+                margin-bottom: 150px; 
+            }
+
+            /* شريط التنقل يتبع العرض الجديد للحاوية */
+            .nav-bar {
+                max-width: var(--app-max-width);
+                border-radius: 0 0 12px 12px;
+            }
+            
+            /* Floating Button for Desktop */
+            #addObservationButton {
+                 max-width: 400px; /* Limit width on desktop */
+                 width: auto;
+            }
+
+            /* Flexbox for better modal centering on desktop */
+            .modal {
+                padding-top: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-content {
+                margin: auto; 
+            }
+            
+            /* Grid for KPI Cards on Desktop */
+            #kpiListContainer {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+    </style>
 </head>
-<body>
-<div class="app-container">
-  <div class="header">Safety Observations 👷 My Observations App</div>
-
-  <div class="content-area">
-    <!-- News -->
-    <div id="NewsTab" class="tab-content" data-src="https://docs.google.com/spreadsheets/d/1_SwxL5f4mWF5kd2yofCMCEE_WQp_2eroHDhXXPXtw1U/export?format=csv&gid=0">
-      <div id="AnnouncementsContainer">
-        <div class="announcement-card">
-          <div class="card-date">Date: Loading...</div>
-          <div class="card-title">Loading news...</div>
-          <div class="card-content">If this persists, check Google Sheet sharing settings.</div>
+<body class="light-mode">
+<div id="leaderboardModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="hideLeaderboardModal()">&times;</span>
+        <h2 style="text-align:center; color:var(--secondary-color); margin-top:0; font-family: 'Poppins', sans-serif;">🏆 Monthly Leaderboard</h2>
+        <div id="leaderboardContainer">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading leaderboard...
+            </div>
         </div>
-      </div>
+    </div>
+</div>
+
+<div id="emergencyContactsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="hideEmergencyContactsModal()">&times;</span>
+        <h2 style="text-align:center; color:var(--danger-color); margin-top:0; font-family: 'Poppins', sans-serif;">🆘 EMERGENCY CONTACTS</h2>
+
+        <div id="emergencyContactsTableContainer" style="overflow-x:auto;">
+            <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+                <thead>
+                    <tr style="background-color: var(--accent-light);">
+                        <th style="border: 1px solid var(--border-color); padding: 8px; text-align: left;">Name</th>
+                        <th style="border: 1px solid var(--border-color); padding: 8px; text-align: left;">Designation</th>
+                        <th style="border: 1px solid var(--border-color); padding: 8px; text-align: center;">Contact No.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">CAT EMERGENCY</td><td style="border: 1px solid var(--border-color); padding: 8px;">EMERGENCY</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0543133645">054 313 3645</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">HARADH CLINIC</td><td style="border: 1px solid var(--border-color); padding: 8px;">Haradh Clinic</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0569180911">056 918 0911</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Maher A. Jardali</td><td style="border: 1px solid var(--border-color); padding: 8px;">Operation Manager</td><td style="border: 1.5px solid var(--border-color); padding: 8px;"><a href="tel:0505817134">050 581 7134</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Rifat Mehmood</td><td style="border: 1px solid var(--border-color); padding: 8px;">Project Manager</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0505366873">050 536 6873</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Shahzad Ahmad Khan</td><td style="border: 1.5px solid var(--border-color); padding: 8px;">HSSE Manager</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0543133645">054 313 3645</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Mahmoud Al Cheikh</td><td style="border: 1px solid var(--border-color); padding: 8px;">Project Engineer</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0551367496">055 136 7496</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Adnan Ghemrawi</td><td style="border: 1px solid var(--border-color); padding: 8px;">Project Engineer (Hydrotest)</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0500291404">050 029 1404</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Hassan El Cherbagi</td><td style="border: 1px solid var(--border-color); padding: 8px;">Project Engineer</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0539039724">053 903 9724</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Hadi Hamdi</td><td style="border: 1px solid var(--border-color); padding: 8px;">Mechanical Engineer</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0508838541">050 883 8541</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Imad El Hage</td><td style="border: 1px solid var(--border-color); padding: 8px;">Project PMV Manager</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0553713952">055 371 3952</a></td></tr>
+                    <tr><td style="1.5px solid var(--border-color); padding: 8px;">Rabih Hassan</td><td style="border: 1px solid var(--border-color); padding: 8px;">Sr. Civil Engineer</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0504838832">050 483 8832</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Om Prakash</td><td style="border: 1px solid var(--border-color); padding: 8px;">HSSE Coordinator</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0544303677">054 430 3677</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Tauqeer Nabi</td><td style="border: 1px solid var(--border-color); padding: 8px;">Environmental Coordinator</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0595820934">059 582 0934</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Irfan Haider</td><td style="border: 1px solid var(--border-color); padding: 8px;">HSSE Supervisor</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0590654748">059 065 4748</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Taha Ghemrawi</td><td style="border: 1px solid var(--border-color); padding: 8px;">Sr. Transport Officer</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0539195375">053 919 5375</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Abdul Karim</td><td style="border: 1px solid var(--border-color); padding: 8px;">Material Supervisor</td><td style="border: 1.5px solid var(--border-color); padding: 8px;"><a href="tel:0502884442">050 288 4442</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Arif Khan</td><td style="border: 1px solid var(--border-color); padding: 8px;">Safety officer/BLS/First Ajder</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0576563119">057 656 3119</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Dr. Ahmed Hussein</td><td style="border: 1px solid var(--border-color); padding: 8px;">CAT Doctor</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0562535421">056 253 5421</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Romelle M. Pagayon</td><td style="border: 1px solid var(--border-color); padding: 8px;">Male Nurse</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0531551924">053 155 1924</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Joe Franco V. Yabut</td><td style="border: 1px solid var(--border-color); padding: 8px;">CAT First aider</td><td style="border: 1.5px solid var(--border-color); padding: 8px;"><a href="tel:0506735217">050 673 5217</a></td></tr>
+                    <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Shahid Bhatti</td><td style="border: 1.5px solid var(--border-color); padding: 8px;">Ambulance Driver</td><td style="border: 1.5px solid var(--border-color); padding: 8px;"><a href="tel:0593886520">059 388 6520</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 style="text-align:center; color:var(--secondary-color); margin-top:25px; border-top:1px dashed var(--border-color); padding-top:15px; font-family: 'Poppins', sans-serif;">External Emergency Contacts</h3>
+        <table style="width:100%; border-collapse: collapse; font-size:13.5px;">
+            <thead>
+                <tr style="background-color: var(--accent-light);">
+                    <th style="border: 1px solid var(--border-color); padding: 8px;">Description</th>
+                    <th style="border: 1px solid var(--border-color); padding: 8px;">Tel. Numbers</th>
+                    <th style="border: 1px solid var(--border-color); padding: 8px;">Description</th>
+                    <th style="border: 1px solid var(--border-color); padding: 8px;">Tel. Numbers</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Southern Area (Abqaiq)</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0135720911">013 572 0911</a></td><td style="border: 1px solid var(--border-color); padding: 8px;">Civil Defense (Fire)</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:998">998</a></td></tr>
+                <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Nadec Hospital (Haradh)</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:0135849000">013 584 9000</a></td><td style="border: 1px solid var(--border-color); padding: 8px;">Red Crescent (Ambulance)</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:997">997</a></td></tr>
+                <tr><td style="border: 1px solid var(--border-color); padding: 8px;">Al Ahsa Hospital (Al Hofuf)</td><td style="border: 1.5px solid var(--border-color); padding: 8px;"><a href="tel:0135844000">013 584 4000</a></td><td style="border: 1px solid var(--border-color); padding: 8px;">Local Police</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:999">999</a></td></tr>
+                <tr><td></td><td></td><td style="border: 1px solid var(--border-color); padding: 8px;">Local Traffic Accident</td><td style="border: 1px solid var(--border-color); padding: 8px;"><a href="tel:993">993</a></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="jsaConfirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="hideJSAConfirmationModal()">&times;</span>
+        <h2>فتح مستند تحليل سلامة العمل (JSA)</h2>
+        <p>سيتم نقلك إلى مستند Google Drive. هل أنت متأكد من رغبتك في المتابعة؟</p>
+        
+        <a id="driveLinkConfirm" href="#" target="_blank" class="drive-button">
+            ✅ نعم، افتح المستند في Google Drive
+        </a>
+    </div>
+</div>
+
+
+<div class="app-container">
+    <div class="header">
+        <span>My Observations App 👷🏻‍♂️</span>
+        <div class="mode-toggle" onclick="toggleDarkMode()">
+             <i id="modeIcon" class="fas fa-moon"></i> 
+        </div>
     </div>
 
-    <!-- Form -->
-    <div id="FormTab" class="tab-content">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfYED_4UfHcmWn0fQOjtR5s8A0-Bhr4dwpe-80GjKkLeTR_Lw/viewform?embedded=true"></iframe>
+    <div class="content-area">
+        <div id="NewsTab" class="tab-content">
+            <div id="AnnouncementsContainer">
+                <div id="newsLoading" class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Fetching news...
+                </div>
+            </div>
+        </div>
+        
+        <div id="FormTab" class="tab-content">
+            <h3 style="text-align:center; color:var(--primary-color);">Click the floating button "Add New Observation" to open the form.</h3>
+        </div>
+
+        <div id="DataTab" class="tab-content">
+            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTXlN-sE-IkQJLMaVOvRGSBYNLsDvwZTD15w7rarTIXBGoacF0C5_eiI7OmFs__zA8jtlwhy0ULLZ8N/pubhtml"></iframe>
+        </div>
+
+        <div id="TasksTab" class="tab-content">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSezm0wWTdEsvkIdnzhfpRf0G37tZzqbY-AF-BHfbXXiLr2rKA/viewform?embedded=true"></iframe>
+        </div>
+        
+        <div id="JSATab" class="tab-content">
+            <input type="text" id="jsaSearch" placeholder="Search JSA titles (e.g., Loading unloading)...">
+            <div id="jsaListContainer"></div>
+        </div>
+
+        <!-- 🆕 Tools Tab (Inserted) -->
+        <div id="ToolsTab" class="tab-content">
+            
+            <!-- Tool Toggle Switch -->
+            <div class="tool-toggle-container">
+                <button class="tool-toggle-btn active-tool" data-tool="kpi" onclick="switchTool('kpi')">Safety KPIs</button>
+                <button class="tool-toggle-btn" data-tool="heat" onclick="switchTool('heat')">Heat Stress</button>
+            </div>
+
+            <!-- KPI Section -->
+            <div id="kpiSection">
+                <div style="text-align:center; margin-bottom:15px; color:var(--kpi-color);">
+                    <i class="fas fa-calculator fa-2x"></i>
+                    <h3 style="margin:5px 0;">Safety KPI Calculator</h3>
+                    <small style="color:var(--text-muted);">Based on Saudi Aramco CSM & Safety Handbook</small>
+                </div>
+                <div id="kpiListContainer">
+                    <!-- KPIs will be injected here via JS -->
+                </div>
+            </div>
+
+            <!-- Heat Stress Section -->
+            <div id="heatStressSection" style="display:none;">
+                <div style="text-align:center; margin-bottom:15px; color:var(--heat-color);">
+                    <i class="fas fa-sun fa-2x"></i>
+                    <h3 style="margin:5px 0;">Heat Stress Calculator</h3>
+                    <small style="color:var(--text-muted);">Calculate Heat Index & Hazard Level</small>
+                </div>
+                
+                <div class="kpi-card" style="border-left-color: var(--heat-color);">
+                    <div class="kpi-input-group">
+                        <label>Air Temperature (°C)</label>
+                        <input type="number" id="inputTemp" class="kpi-input-field" placeholder="e.g., 35" oninput="calculateHeatIndex()">
+                    </div>
+                    <div class="kpi-input-group">
+                        <label>Relative Humidity (%)</label>
+                        <input type="number" id="inputHumidity" class="kpi-input-field" placeholder="e.g., 40" oninput="calculateHeatIndex()">
+                    </div>
+                </div>
+
+                <div id="heatIndexResultCard">
+                    <div style="font-size:12px; opacity:0.9;">HEAT INDEX</div>
+                    <div class="heat-value" id="heatIndexValue">--</div>
+                    <div class="heat-category" id="heatRiskLevel">--</div>
+                    
+                    <div class="heat-recommendations">
+                        <div style="font-weight:bold; margin-bottom:5px;">⚠️ Recommendations (Safety Handbook):</div>
+                        <ul id="heatRecommendationsList">
+                            <li>Enter temperature and humidity to see results.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="font-size:10px; color:var(--text-muted); margin-top:15px; text-align:center; font-style:italic;">
+                    Note: This tool uses the NOAA Heat Index formula. Always follow specific site GI 6.021 or Flag System if strictly enforced.
+                </div>
+            </div>
+
+        </div>
+        <!-- End Tools Tab -->
+
+        <div id="InfoTab" class="tab-content active"> 
+            <div class="info-month"> The Color Code of This Month is: <span id="colorName">...</span></div>
+
+            <div class="announcement-card" id="eomCard" style="border:2px solid gold; margin-bottom:15px; cursor:pointer;">
+                <div class="card-title" id="eomCardTitle" style="color:var(--text-color); font-size:18px;">
+                    <i class="fas fa-trophy" style="color: #FFD700;"></i> Employee of the Month:
+                </div>
+                <div class="card-content" id="employeeOfMonth" style="font-size:18px; font-weight:bold; color:var(--primary-color); display:block; border-top: none; padding-top: 0; margin-top: 0;">Loading...</div>
+            </div>
+
+            <button class="accordion" onclick="showLeaderboardModal()" data-color="#FFD700">
+                <i class="fas fa-list-ol"></i> Monthly Leaderboard
+            </button>
+
+            <button class="accordion" id="emergencyAccordion" onclick="showEmergencyContactsModal()" data-color="#FF0000">
+                <i class="fas fa-ambulance" style="color: var(--danger-color);"></i> EMERGENCY CONTACTS
+            </button>
+
+            <button class="accordion" id="reportingAccordion" data-color="#ffc107">
+                <i class="fas fa-exclamation-triangle"></i> EMERGENCY REPORTING PROCEDURES
+            </button>
+            <div class="panel" id="reportingPanel">
+                <ol>
+                    <li>Dial the Number - (الاتصال بالرقم).</li>
+                    <li>Describe the Exact location of the emergencies (تحديد الموقع بدقة).</li>
+                    <li>Describe the nature of the emergencies (وصف طبيعة الطوارئ).</li>
+                    <li>Identify the Emergency Service Required (Fire, Ambulance, Security) and repeat the message (تحديد الخدمة المطلوبة وتكرار الرسالة).</li>
+                    <li>Answer all the questions from the operator (الإجابة على أسئلة المتصل).</li>
+                    <li>Don't Hang up till the operator tells you to do so (لا تُغلق الخط حتى يُطلب منك ذلك).</li>
+                </ol>
+            </div>
+             <!-- Other accordions preserved... -->
+             <button class="accordion" id="evacuationAccordion" data-color="var(--success-color)">
+                <i class="fas fa-door-open"></i> EVACUATION TIPS
+            </button>
+            <div class="panel" id="evacuationPanel">
+                <ul>
+                    <li>When an emergency condition exists or upon hearing the emergency alarm, everyone must ensure:</li>
+                    <li>All work must **stop**, shut down all power equipment (i.e., computer, welding machine, vehicles, cranes etc.).</li>
+                    <li>If you are in the building, **warn others around you** if possible & evacuate the personnel to the designated **assembly area**.</li>
+                    <li>A **roll call must be taken** by manager or immediate supervisor & every man must be accounted for.</li>
+                </ul>
+            </div>
+            
+            <button class="accordion" id="safetyAccordion" data-color="#007bff">
+                <i class="fas fa-user-shield"></i> Safety Responsibilities
+            </button>
+            <div class="panel" id="safetyPanel">
+                <ol>
+                   <li>Reporting chain to follow site HSE / Safety Supervisor, Coordinator & Manager.</li>
+                   <li>Visibly demonstrate the priority of safety in all activities, including setting a good personal example.</li>
+                   <li>Understand and be familiar with safety and health requirements of the contract, as well as CSSP, HIP, JSA, GI’s, CSM, local laws, and other best practices.</li>
+                   <li>Conduct all TBTs (Daily, Weekly & Mass) with site workers and construction supervisory staff, and hand over accurate records to the HSE Supervisor at the end of each shift.</li>
+                   <li>Conduct frequent HSE inspections of the assigned location and continuously monitor ongoing activities.</li>
+                   <li>Report all NM, FAI, CA & PA to your immediate HSE Supervisor.</li>
+                   <li>Report all incidents that result in injury or property damage to your immediate HSE Supervisor.</li>
+                   <li>Report misuse of equipment, tools, or facilities to your immediate HSE Supervisor.</li>
+                   <li>Report any severe arguments, signs of prejudice, bullying, or fighting to your immediate HSE Supervisor.</li>
+                   <li>Report any other Health, Safety, or Environmental concerns to your immediate HSE Supervisor.</li>
+                   <li>Report all unsafe situations and occurrences immediately.</li>
+                   <li>Be vigilant and present at the site location at all times while activities are ongoing to ensure safe operations.</li>
+                   <li>Responsible and accountable for accurate and timely reporting of all HSE issues to the assigned HSE Supervisor.</li>
+                   <li>Whenever the Safety Officer has an HSE concern, report it immediately to the person in charge (Foreman, Supervisor, or Site Engineer), regardless of the action taken, and submit a report to the HSE Supervisor or HSE Coordinator/Manager.</li>
+                   <li>Liaise with client representatives when instructed by the HSE Supervisor, Coordinator, or Manager.</li>
+                   <li>Monitor and close all site-related PSI points, HSE findings, and observations raised during audits, inspections, or site visits by client or management.</li>
+                   <li>Follow up with construction site supervision to close all site HSE issues and concerns.</li>
+                   <li>Provide correctly and accurately filled checklists, including but not limited to heavy equipment, daily site inspection, and portable electrical tools checklists.</li>
+                   <li>Inspect and monitor subcontractor activities to ensure compliance with the OHS management system.</li>
+                   <li>Ensure that subcontractors and visitors receive safety orientation prior to entering the site.</li>
+                   <li>Ensure all equipment is in safe working condition and report abnormalities immediately.</li>
+                   <li>Ensure no N.D.E. is carried out if it may endanger any person.</li>
+                   <li>Ensure 100% compliance with the work permit system at the site (Client and CAT).</li>
+                   <li>Ensure that equipment operators are competent and hold valid certificates.</li>
+                   <li>Carry out monthly inspections, including fire extinguishers, rigging, and lifting equipment.</li>
+                   <li>Ensure all tools and electrical equipment are in good condition and safe to use.</li>
+                   <li>Ensure scaffolding platforms and ladders are safe, secured, inspected, and tagged before use.</li>
+                   <li>Ensure the jobsite is kept tidy and waste materials are removed at the end of each shift.</li>
+                   <li>Stop work as per HSI 063 and the Area Manager Stop Work Authority Policy.</li>
+                   <li>Participate in or conduct incident investigations, safety meetings, drills, and safety training sessions.</li>
+                   <li>Assist in implementing the waste management plan at the project site and camp.</li>
+                   <li>Follow and implement all written and verbal business-related instructions given by your seniors.</li>
+                </ol>
+            </div>
+
+            <button class="accordion" id="tbtAccordion" data-color="var(--primary-color)">
+                <i class="fas fa-book-open"></i> TBT of The Day
+            </button>
+            <div class="panel" id="tbtPanel"></div>
+            
+            <button class="accordion" data-color="#6f42c1">
+                <i class="fas fa-link"></i> Useful Links
+            </button>
+            <div class="panel">
+                <ul>
+                    <li><a href="https://drive.google.com/file/d/1JS1VQKXLHdOOFXpYcpRftM-kviBv-TYd/view?usp=sharing" target="_blank">📘 CSM Book</a></li>
+                    <li><a href="https://drive.google.com/file/d/109vG3Hk3PdgvQF87k0EJ1IiKDTDfdQTv/view?usp=sharing" target="_blank">📗 Saudi Aramco Safety HandBook</a></li>
+                </ul>
+            </div>
+        </div>
+
     </div>
+    
+    <a id="addObservationButton" href="https://docs.google.com/forms/d/e/1FAIpQLSfYED_4UfHcmWn0fQOjtR5s8A0-Bhr4dwpe-80GjKkLeTR_Lw/viewform?usp=header" target="_blank">
+        <i class="fas fa-plus"></i> Add New Observation
+    </a>
 
-    <!-- Data -->
-    <div id="DataTab" class="tab-content" data-src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTXlN-sE-IkQJLMaVOvRGSBYNLsDvwZTD15w7rarTIXBGoacF0C5_eiI7OmFs__zA8jtlwhy0ULLZ8N/pubhtml"></div>
-
-    <!-- Tasks -->
-    <div id="TasksTab" class="tab-content" data-src="PLACEHOLDER_DAILY_TASKS_URL"></div>
-
-    <!-- Info Tab (New) -->
-    <div id="InfoTab" class="tab-content">
-      <div class="info-month" id="monthColorText">The Color Code of This Month is: <span id="colorName">...</span></div>
-
-      <!-- Safety Responsibility -->
-      <button class="accordion" id="safetyAccordion" role="button" aria-expanded="false" aria-controls="safetyPanel" tabindex="0">Safety Responsibility</button>
-      <div class="panel" id="safetyPanel">
-        <ol>
-          <li>Reporting chain to follow site HSE / Safety supervisor, Coordinator & Manager.</li>
-          <li>Visibly demonstrate the priority of safety in all activities.</li>
-          <li>Understand & familiar with safety & health requirements (CSM, HIP, JSA, local laws, best practices).</li>
-          <li>Conduct all TBTs and hand over records to HSE supervisor.</li>
-          <li>Frequent HSE inspections & continuous monitoring.</li>
-          <li>Report all NM, FAI, CA & PA to HSE supervisor.</li>
-          <li>Report incidents causing injury or damage.</li>
-          <li>Report misuse of equipment, tools, facilities.</li>
-          <li>Report severe arguments, bullying, or fighting.</li>
-          <li>Report any other HSE concerns immediately.</li>
-        </ol>
-      </div>
-
-      <!-- Daily Safety Tip -->
-      <button class="accordion" id="dailyTipsAccordion" role="button" aria-expanded="false" aria-controls="dailyTipsPanel" tabindex="0">Daily Safety Tip</button>
-      <div class="panel" id="dailyTipsPanel">
-        <p id="todayTip" style="font-size:15px; line-height:1.6;">Loading today's tip...</p>
-      </div>
-
-      <!-- Useful Links -->
-      <button class="accordion" id="linksAccordion" role="button" aria-expanded="false" aria-controls="linksPanel" tabindex="0">Useful Links</button>
-      <div class="panel" id="linksPanel">
-        <ul>
-          <li><a href="https://drive.google.com/file/d/15gvUFs5ELvaUhDVTapkvGf6a5GkGEx5s/view?usp=sharing" target="_blank">CSM Book (Important Safety Manual)</a></li>
-          <li><a href="#" target="_blank">Daily Checklist</a></li>
-          <li><a href="#" target="_blank">Observation Form CSV</a></li>
-        </ul>
-      </div>
+    <div class="nav-bar">
+        <div class="nav-button" data-color="#17a2b8" onclick="openTab(event, 'NewsTab')">
+            <span class="nav-icon"><i class="fas fa-bullhorn"></i></span>
+            <span>News</span>
+        </div>
+        <div class="nav-button" data-color="var(--success-color)" onclick="openTab(event, 'DataTab')">
+            <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+            <span>Data</span>
+        </div>
+        <div class="nav-button" data-color="#6f42c1" onclick="openTab(event, 'TasksTab')">
+            <span class="nav-icon"><i class="fas fa-list-check"></i></span>
+            <span>Tasks</span>
+        </div>
+        <div class="nav-button" data-color="var(--jsa-color)" onclick="openTab(event, 'JSATab')">
+            <span class="nav-icon"><i class="fas fa-handshake"></i></span>
+            <span>JSA</span>
+        </div>
+        <!-- 🆕 Tools Tab Button (Was KPI) -->
+        <div class="nav-button" data-color="var(--kpi-color)" onclick="openTab(event, 'ToolsTab')">
+            <span class="nav-icon"><i class="fas fa-calculator"></i></span>
+            <span>Tools</span>
+        </div>
+        <div class="nav-button active" data-color="var(--danger-color)" onclick="openTab(event, 'InfoTab')"> 
+            <span class="nav-icon"><i class="fas fa-circle-info"></i></span>
+            <span>Info</span>
+        </div>
     </div>
-  </div>
-
-  <!-- Nav Bar -->
-  <div class="nav-bar">
-    <div class="nav-button" onclick="openTab(event,'NewsTab')"><span class="nav-icon icon-news"></span><span>News</span></div>
-    <div class="nav-button" onclick="openTab(event,'FormTab')"><span class="nav-icon icon-form"></span><span>Observation</span></div>
-    <div class="nav-button" onclick="openTab(event,'DataTab')"><span class="nav-icon icon-data"></span><span>Safety Data</span></div>
-    <div class="nav-button" onclick="openTab(event,'TasksTab')"><span class="nav-icon icon-tasks"></span><span>Daily Tasks</span></div>
-    <div class="nav-button" onclick="openTab(event,'InfoTab')"><span class="nav-icon icon-info"></span><span>Info</span></div>
-  </div>
 </div>
 
 <script>
-  // ----- Load News CSV -----
-  function loadNews(){
-    const newsTab=document.getElementById('NewsTab');
-    const container=document.getElementById('AnnouncementsContainer');
-    const url=newsTab.getAttribute('data-src');
-    if(!url || !url.includes('google.com/spreadsheets/d/')){ container.innerHTML='<div class="announcement-card"><div class="card-title" style="color:red;">Config Error</div><div class="card-content">Check Google Sheet CSV link.</div></div>'; return;}
-    fetch(url).then(r=>{if(!r.ok)throw new Error(); return r.text();}).then(data=>{
-      const rows=data.trim().split('\n').slice(1);
-      let htmlContent='';
-      rows.forEach(row=>{
-        const cols=row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)||[];
-        if(cols.length>=3){
-          const date=cols[0].trim().replace(/^"|"$/g,''), title=cols[1].trim().replace(/^"|"$/g,''), content=cols[2].trim().replace(/^"|"$/g,'');
-          htmlContent+=`<div class="announcement-card"><div class="card-date">Date: ${date}</div><div class="card-title">${title}</div><div class="card-content">${content}</div></div>`;
+// Global variables for modal and sheet data
+const eomSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0Km9p6XYDDxyGYSFfUjDjhdKMtr_hFvCiJ-U5_24_-QKrGsexZ4v3dxzKp0K1XZenNsiV7CiNmQEt/pub?output=csv';
+let leaderboardData = []; // Store the fetched data here
+const tbtData = [
+    { title: " TBT of The Day Alcohol and Drugs", link: "https://drive.google.com/file/d/1uIGAjyY2UuxdkWToEGqMoF-L1Q9cIn5c/view?usp=drivesdk" },
+    { title: " TBT of The Day Biohazard infection materials", link: "https://drive.google.com/file/d/1wUY8mlaEXOroUK5IoPPbBpym97Jdjfm4/view?usp=drivesdk" },
+    { title: " TBT of The Day Cold Weather", link: "https://drive.google.com/file/d/1QOp3TVAb-si19p-taHpPjSwEfXs1O5us/view?usp=drivesdk" },
+    { title: " TBT of The Day Compressed Gas", link: "https://drive.google.com/file/d/1a7tLsOI7Re7QAWDivisUFdakbvpSEYOt/view?usp=drivesdk" },
+    { title: " TBT of The Day Construction Fires", link: "https://drive.google.com/file/d/1nXBiIuAEjs4om2NwASqfyhtT-8IUBpGt/view?usp=drivesdk" },
+    { title: " TBT of The Day Corrosive Materials", link: "https://drive.google.com/file/d/1VaFxPYhYt0Ho8blbkGQi2S4ubsT882ge/view?usp=drivesdk" },
+    { title: " TBT of The Day Dangerously reactive material", link: "https://drive.google.com/file/d/16CNFN5iuf3YFyVW-tYNVQgHkRu8z8deg/view?usp=drivesdk" },
+    { title: " TBT of The Day Dial before you Dig", link: "https://drive.google.com/file/d/1YlWyaHh2lPoum-OYYoJ2qP8t948qwLZI/view?usp=drivesdk" },
+    { title: " TBT of The Day Driving in Reverse", link: "https://drive.google.com/file/d/1QzLSWz3CFfjGdmj62OsFdvT5IcV_lrqJ/view?usp=drivesdk" },
+    { title: " TBT of The Day Emergency Response", link: "https://drive.google.com/file/d/1bWiXimPy6SmqbtEs5LxJE9zvS765GSzN/view?usp=drivesdk" },
+    { title: " TBT of The Day Equipment Guards", link: "https://drive.google.com/file/d/1i4o3HHM6O2EPJ1hf-2IQ97_AREDCMIDr/view?usp=drivesdk" },
+    { title: " TBT of The Day Exercise and Health", link: "https://drive.google.com/file/d/13pnUXqSmGNuXHAGKG7TyKhwryEWbtAaO/view?usp=drivesdk" },
+    { title: " TBT of The Day Eye Protection", link: "https://drive.google.com/file/d/13HufH-DcwH-P-pEZZKTUNzHSo2lzyzLa/view?usp=drivesdk" },
+    { title: " TBT of The Day Fall Protection", link: "https://drive.google.com/file/d/1I_MQHppz0KnwIgiTiLwpLUPyd0N-z1c_/view?usp=drivesdk" },
+    { title: " TBT of The Day Fatigue", link: "https://drive.google.com/file/d/1jidO7NprdqLowWkXEXKtWBPBq5iwI9yA/view?usp=drivesdk" },
+    { title: "TBT of The Day Flammable and Combustible Materials", link: "https://drive.google.com/file/d/1Gcbe3miY43cJYkW6a7sTO7mbC8m31ICL/view?usp=drivesdk" },
+    { title: "TBT of The Day Foot Protection", link: "https://drive.google.com/file/d/1aQJxutEcqL2H_mcnSBK9uuj2silzAyRl/view?usp=drivesdk" },
+    { title: " TBT of The Day Grinders", link: "https://drive.google.com/file/d/1jJqncsuUSmrF2dPlqlLz28jRN73H-RBe/view?usp=drivesdk" },
+    { title: " TBT of The Day Hand Protection", link: "https://drive.google.com/file/d/1LOiKyFoMb3dsR_pYyJECJLxCMFpEhpFT/view?usp=drivesdk" },
+    { title: " TBT of The Day Hazardous Waste", link: "https://drive.google.com/file/d/1pLR9ewUgc0Memjx3BLiOnSW-4MWf7IKe/view?usp=drivesdk" },
+    { title: " TBT of The Day Head Protection", link: "https://drive.google.com/file/d/1BlmB3NNKNldC0xMH-c_j-KqlmDva_loF/view?usp=drivesdk" },
+    { title: " TBT of The Day Hearing", link: "https://drive.google.com/file/d/191qRYe-ZVNfcSGHBtm6TLK4rVAOFtKTh/view?usp=drivesdk" },
+    { title: " TBT of The Day Hot Weather", link: "https://drive.google.com/file/d/1to9Fzdpv5bu3GQm98prLzFSjpuHAmuUh/view?usp=drivesdk" },
+    { title: " TBT of The Day Housekeeping", link: "https://drive.google.com/file/d/1iTMdIu08H0H-0S03mxMrlawHSWhjEf-c/view?usp=drivesdk" },
+    { title: " TBT of The Day Inspection of Tools", link: "https://drive.google.com/file/d/1kNXJxumw42uQe1eGdBLZ-KlKEoI_ctF6/view?usp=drivesdk" },
+    { title: " TBT of The Day Ladder Safety", link: "https://drive.google.com/file/d/1KO_-SERnB-IE68KL-cmxxG6dVkFVERUq/view?usp=drivesdk" },
+    { title: " TBT of The Day Locking Out", link: "https://drive.google.com/file/d/1AhXs6ej3cDXk5gAIQAt09ySwAtZV7dn8/view?usp=drivesdk" },
+    { title: " TBT of The Day Material Safety Data Sheet", link: "https://drive.google.com/file/d/1hpf53QlwxLDp0VZC6F5TBZ1NTZuId6Gp/view?usp=drivesdk" },
+    { title: " TBT of The Day Oxidizing Materials", link: "https://drive.google.com/file/d/10dBlB83VwTiGtbN5RteXckS7rbmUaekS/view?usp=drivesdk" },
+    { title: " TBT of The Day Personal Protective Equipment", link: "https://drive.google.com/file/d/1IfAiA0mVIrLEGIxip-YhrhFyLhGCC0Yk/view?usp=drivesdk" },
+    { title: " TBT of The Day Pinch Points and Blinds", link: "https://drive.google.com/file/d/1fFNrba9aIgQxXcbiaLnjb5FqHsKTGjPG/view?usp=drivesdk" },
+    { title: " TBT of The Day Poisonous and Infectious Materials", link: "https://drive.google.com/file/d/1g1hsd8OIgPt6njOeSNozajuAiVJNKMlX/view?usp=drivesdk" },
+    { title: " TBT of The Day Power Lines", link: "https://drive.google.com/file/d/1Sqlm3-z9cZ6RaOFqVPL-A4sZ1pnxDxLD/view?usp=drivesdk" },
+    { title: " TBT of The Day Power Saws", link: "https://drive.google.com/file/d/1WiTJbh7uaGCTwzUHo5EUMa6vYl-hzMBj/view?usp=drivesdk" },
+    { title: " TBT of The Day Proper Lifting and Back Care", link: "https://drive.google.com/file/d/10EutgMs_0XH_VJvF2_vIYcQRIlPQtN_4/view?usp=drivesdk" },
+    { title: " TBT of The Day Reporting Accidents", link: "https://drive.google.com/file/d/1AoADCkqOQxoWMIkQkNa2S71FzZzra4s6/view?usp=drivesdk" },
+    { title: " TBT of The Day Reporting Near Miss and incident", link: "https://drive.google.com/file/d/1W5yhuJrbdaO27S2B-TnPbTVVKkCSnIFG/view?usp=drivesdk" },
+    { title: " TBT of The Day Respiratory Protective", link: "https://drive.google.com/file/d/1QX86Iu4RJj5bvdzWdJgtKAy8-LIRR8x7/view?usp=drivesdk" },
+    { title: " TBT of The Day Roofing", link: "https://drive.google.com/file/d/17INX1mFhwxHsxyM8A6Vbd98jywHDFN08/view?usp=drivesdk" },
+    { title: " TBT of The Day Scaffold Safety", link: "https://drive.google.com/file/d/1BPzGrFJMuA9eDl46zhh7iQqMYqqnMwLS/view?usp=drivesdk" },
+    { title: " TBT of The Day Signs", link: "https://drive.google.com/file/d/1RfT2WDhQnOW_8FTv2t80UfhXO14uEmxJ/view?usp=drivesdk" },
+    { title: " TBT of The Day Slips and Trips", link: "https://drive.google.com/file/d/11QSqSs0SWcXHjzNQMrjDtumrKtM5Wp0u/view?usp=drivesdk" },
+    { title: " TBT of The Day Stretching", link: "https://drive.google.com/file/d/1dD54piQQtbjhhw3u_4bCLSfjp9cd5Jtr/view?usp=drivesdk" },
+    { title: " TBT of The Day Traffic Control People", link: "https://drive.google.com/file/d/1aLbvfU2E4OpsYv4UkjTa4Y6QEupxDwPI/view?usp=drivesdk" },
+    { title: " TBT of The Day Transportation of Goods", link: "https://drive.google.com/file/d/1rbuTSg_MTsr_gwxGNWAyyPeBvZpNOGHL/view?usp=drivesdk" },
+    { title: " TBT of The Day Trenching and Excavating", link: "https://drive.google.com/file/d/1CKOVtAR5iGz0PVQz51adhC6ZXjtEJgV_/view?usp=drivesdk" },
+    { title: " TBT of The Day Working Around Mobile Equipment", link: "https://drive.google.com/file/d/14SncgzRAVHd8-kJNGmZVroYuS42TshEr/view?usp=drivesdk" },
+    { title: " TBT of The Day Working With Hazardous Materials", link: "https://drive.google.com/file/d/1gYF6cUISYjUZF_pLEKadmPbe49YM2_ph/view?usp=drivesdk" }
+];
+// JSA Data structure: { title: "JSA Title", link: "Google Drive Link" }
+const jsaData = [
+        { title: "Abrasive Blasting And Coating", link: "https://drive.google.com/file/d/1tZBj37GGJ7h9uRYDI5TIL04OkNrEMoLu/view?usp=drivesdk" },
+        { title: "Backfilling Levelling And Compaction", link: "https://drive.google.com/file/d/1I32miHCfXBzETNx5UePxwHY4f9Fi-Fd1/view?usp=drivesdk" },
+         { title: "Backfilling Levelling And Compaction Around Cellar", link: "https://drive.google.com/file/d/1Fiei1faeqkuNCxR_-FMOlBF66w1ELC-0/view?usp=drivesdk" },
+        { title: "Bolt Tightening And Torquing Activity", link: "https://drive.google.com/file/d/1iEyD5UObnaZ0TppEgmsAI-I0ELzJz7ce/view?usp=drivesdk" },
+        { title: "Concrete-Rock Breaking Using Jackhammer Near X-Mas Tree", link: "https://drive.google.com/file/d/1YlO786qpo1mSVZVumvLFE3PQIKHGQPUk/view?usp=drivesdk" },
+        { title: "Construction Of Anchor", link: "https://drive.google.com/file/d/1PB8DeTYv3HbdlTSVdWWGtWYl5gJBmrIL/view?usp=drivesdk" },
+        { title: "Construction Of Burn Pit", link: "https://drive.google.com/file/d/1__bqRlMFSgajPvS6oED9aEUBrwtSr-Bu/view?usp=drivesdk" },
+        { title: "Construction Of Burn Pit Steps", link: "https://drive.google.com/file/d/1XC1vj7NElbWebkcabBR-9DjzCkYrzE0P/view?usp=drivesdk" },
+        { title: "Construction Of Cellar", link: "https://drive.google.com/file/d/15h6wy8n7-Ln62Q2wCn4tt0vFsgORn4pM/view?usp=drivesdk" },
+        { title: "Construction Of Fence", link: "https://drive.google.com/file/d/1jC5ueNSMMf-FajaZbWUAfDKqeUclf424/view?usp=drivesdk" },
+        { title: "Crane Operation", link: "https://drive.google.com/file/d/1gIrFbzHOc7UJ0Xn8g90B-V7gfodsZERp/view?usp=drivesdk" },
+        { title: "Cutting And Removing Of Steel Cellar", link: "https://drive.google.com/file/d/18olhXtw1lv-Vaiy9BzM322aMzaESqx5j/view?usp=drivesdk" },
+        { title: "E And I Activity", link: "https://drive.google.com/file/d/1Bkn9C9pdeI1RLbIwexKcrODbHhUoPeYA/view?usp=drivesdk" },
+        { title: "Excavation Around Steel Cellar", link: "https://drive.google.com/file/d/1e9oPOsHb86VB98WWXLnXgSchM90wOLu8/view?usp=drivesdk" },
+        { title: "Excavation For Foundation, Riser, And Anchor", link: "https://drive.google.com/file/d/1jERBdkEd9qmRx681gsr9hNVriuAxstoZ/view?usp=drivesdk" },
+        { title: "Excavation For Well Head Trenches", link: "https://drive.google.com/file/d/1LQpvjINei7UpB9EDTWWrfBD-kImbDe3B/view?usp=drivesdk" },
+        { title: "Final Levelling And Compaction", link: "https://drive.google.com/file/d/1UuyTcFwx2Xri58-WyA5YhkEgUuVYcrR9/view?usp=drivesdk" },
+        { title: "Grouting Activity", link: "https://drive.google.com/file/d/1_Z9N9nmllUffi0wQonQjKYGAXKOQVdMO/view?usp=drivesdk" },
+        { title: "Hand Excavation For Exposing Existing Ug Facility", link: "https://drive.google.com/file/d/1tADi51OZAgwGoIFpAul1uyq4z4WKGsTO/view?usp=drivesdk" },
+        { title: "Leak Testing For Tubing", link: "https://drive.google.com/file/d/1yvHoWnV1tc_zN7k4vCp_girvot7QQeZv/view?usp=drivesdk" },
+        { title: "Levelling And Compaction For Anchor Base", link: "https://drive.google.com/file/d/1nU2f6qvX-JWTozC4xz0M3OVGOURGGKsv/view?usp=drivesdk" },
+        { title: "Levelling And Compaction For Cellar Base", link: "https://drive.google.com/file/d/1Mp77FAgB9Lfh7C6hmeW4jGo_W3qmPcx/view?usp=drivesdk" },
+        { title: "Loading & Unloading Activity Using Fork", link: "https://drive.google.com/file/d/1qX1aw1BTySOnECTnDK0s1d1iY3ta2H7_/view?usp=drivesdk" },
+        { title: "Mobilization Demobilization", link: "https://drive.google.com/file/d/1wwMo2li6LxdkvRkULe5h5tQ0IdjE0OTP/view?usp=drivesdk" },
+        { title: "Mobile Crane Operation", link: "https://drive.google.com/file/d/1fEK4a16-l9DOPcAzmUfKwjWjMkefy2Yz/view?usp=drivesdk" },
+        { title: "Pre Commissioning And I-O Mapping Activity", link: "https://drive.google.com/file/d/1DtPI-d6rb9fGyuAxOQ_w1z6yNMLpYfZG/view?usp=drivesdk" },
+        { title: "Scaffold Erection - Dismantling", link: "https://drive.google.com/file/d/1feJtE40cX2bxdWJxoDgHrHEiqbip0ouo/view?usp=drivesdk" },
+        { title: "Shutdown Activity", link: "https://drive.google.com/file/d/1RsZuqzBAVFmzl3awpk7b_X0CZrvktZE9/view?usp=drivesdk" },
+        { title: "Survey Activity", link: "https://drive.google.com/file/d/10NWWZaHMJ7yl3bh9z6hNU14UUkpx2Pd1/view?usp=drivesdk" },
+        { title: "Threading & Bending Of Pipe Using Threading Machine", link: "https://drive.google.com/file/d/1s6YuKlgJwzlJXX-y-IStKX-8ZPPRsinZ/view?usp=drivesdk" },
+        { title: "Welding, Cutting, Grinding & Drilling Activity", link: "https://drive.google.com/file/d/1l7FSBkX0vYrueQFhw3zZ6gofwp_u-zCp/view?usp=drivesdk" },
+        { title: "Welding Cutting And Grinding Activity", link: "https://drive.google.com/file/d/1BF3wr5G-M1ZQM4jRUtRlpXRoehyPYy2B/view?usp=drivesdk" },
+        { title: "Working At Height", link: "https://drive.google.com/file/d/1q_IvI7ZVb-2JmL1S2xP4kyhKz14V1Jv3/view?usp=drivesdk" },
+        { title: "Xray And Pmi", link: "https://drive.google.com/file/d/1VglyFHzLiNFCBBQrG00vQ1lW3OtsQNfk/view?usp=drivesdk" }
+
+];
+
+// 🆕 KPI Data & Logic
+const kpiData = [
+    {
+      id: 1, category: "Lagging", name: "TRIR (Total Recordable Incident Rate)", formula: "rate_200k",
+      inputs: [{ name: "incidents", label: "Recordable Incidents" }, { name: "hours", label: "Total Man-hours" }],
+      targetStr: "< 0.05", targetVal: 0.05, targetType: "max",
+      source: "CSM Vol I, Section 2.0; Safety Handbook"
+    },
+    {
+      id: 2, category: "Lagging", name: "LTI Rate (Lost Time Injury Rate)", formula: "rate_200k",
+      inputs: [{ name: "lti", label: "Lost Time Injuries" }, { name: "hours", label: "Total Man-hours" }],
+      targetStr: "0.00", targetVal: 0.00, targetType: "max",
+      source: "CSM Vol I, Section 2.0; CSM Vol II, Ch 1"
+    },
+    {
+      id: 3, category: "Lagging", name: "Motor Vehicle Accident Rate", formula: "rate_1m",
+      inputs: [{ name: "mva", label: "MVA Count" }, { name: "km", label: "Kilometers Driven" }],
+      targetStr: "0.00", targetVal: 0.00, targetType: "max",
+      source: "CSM Vol II, Ch 8; Safety Handbook"
+    },
+    {
+      id: 4, category: "Leading", name: "Work Permit Compliance %", formula: "percentage",
+      inputs: [{ name: "pass", label: "Permits Passed Audit" }, { name: "total", label: "Total Permits Audited" }],
+      targetStr: "100%", targetVal: 100, targetType: "min",
+      source: "CSM Vol II, Ch 4 (Work Permits)"
+    },
+    {
+      id: 5, category: "Leading", name: "PPE Compliance Rate", formula: "percentage",
+      inputs: [{ name: "pass", label: "Workers with Correct PPE" }, { name: "total", label: "Total Workers Observed" }],
+      targetStr: "100%", targetVal: 100, targetType: "min",
+      source: "CSM Vol II, Ch 3 (PPE)"
+    },
+    {
+      id: 6, category: "Leading", name: "Toolbox Talk Participation %", formula: "percentage",
+      inputs: [{ name: "pass", label: "Personnel Attended" }, { name: "total", label: "Total Personnel on Site" }],
+      targetStr: "100%", targetVal: 100, targetType: "min",
+      source: "CSM Vol I; Safety Handbook"
+    },
+    {
+      id: 7, category: "Leading", name: "Hazard ID Closure Rate", formula: "percentage",
+      inputs: [{ name: "pass", label: "Conditions Closed" }, { name: "total", label: "Conditions Identified" }],
+      targetStr: "100%", targetVal: 100, targetType: "min",
+      source: "CSM Vol I, Sec 2; Safety Handbook"
+    }
+];
+
+function renderKPIs() {
+    const container = document.getElementById('kpiListContainer');
+    container.innerHTML = '';
+
+    kpiData.forEach(kpi => {
+        const card = document.createElement('div');
+        card.className = 'kpi-card';
+        
+        const badgeClass = kpi.category.toLowerCase();
+        
+        let inputsHTML = '';
+        kpi.inputs.forEach(input => {
+            inputsHTML += `
+                <div class="kpi-input-group">
+                    <label>${input.label}</label>
+                    <input type="number" class="kpi-input-field" data-kpi-id="${kpi.id}" data-field="${input.name}" placeholder="0" oninput="calculateKPI(${kpi.id})">
+                </div>
+            `;
+        });
+
+        card.innerHTML = `
+            <div class="kpi-header">
+                <h4 class="kpi-title">${kpi.name}</h4>
+                <span class="kpi-badge ${badgeClass}">${kpi.category}</span>
+            </div>
+            <div class="kpi-inputs">
+                ${inputsHTML}
+            </div>
+            <div class="kpi-footer">
+                <div class="kpi-result-box">
+                    <div class="kpi-result-label">Target: ${kpi.targetStr}</div>
+                    <div class="kpi-result-value text-neutral" id="result-${kpi.id}">-</div>
+                </div>
+            </div>
+            <div class="kpi-citation">Source: ${kpi.source}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function calculateKPI(id) {
+    const kpi = kpiData.find(k => k.id === id);
+    const inputs = document.querySelectorAll(`input[data-kpi-id="${id}"]`);
+    const resultEl = document.getElementById(`result-${id}`);
+    
+    const vals = {};
+    inputs.forEach(inp => vals[inp.dataset.field] = parseFloat(inp.value) || 0);
+
+    const v1 = vals[kpi.inputs[0].name];
+    const v2 = vals[kpi.inputs[1].name];
+    
+    let result = '-';
+    let numResult = 0;
+
+    if (!v2 || v2 === 0) {
+        result = '-';
+    } else {
+        if (kpi.formula === 'rate_200k') {
+            numResult = (v1 * 200000) / v2;
+            result = numResult.toFixed(3);
+        } else if (kpi.formula === 'rate_1m') {
+            numResult = (v1 * 1000000) / v2;
+            result = numResult.toFixed(3);
+        } else if (kpi.formula === 'percentage') {
+            numResult = (v1 / v2) * 100;
+            result = numResult.toFixed(1) + '%';
         }
-      });
-      container.innerHTML=htmlContent||'<div class="announcement-card"><div class="card-title">No News</div><div class="card-content">New news will appear here.</div></div>';
-    }).catch(e=>{container.innerHTML='<div class="announcement-card"><div class="card-title" style="color:red;">Load Error</div><div class="card-content">Cannot fetch CSV data.</div></div>';});
-  }
+    }
 
-  // ----- Tab Control -----
-  function openTab(evt,tabName){
-    const tabs=document.getElementsByClassName('tab-content');
-    const btns=document.getElementsByClassName('nav-button');
-    for(let t of tabs) t.classList.remove('active');
-    for(let b of btns) b.classList.remove('active');
-    const current=document.getElementById(tabName);
-    if(!current) return;
-    current.classList.add('active');
-    evt.currentTarget.classList.add('active');
-    const url=current.getAttribute('data-src');
-    if(tabName==='NewsTab'){ loadNews(); }
-    else if(url && current.children.length===0){ const iframe=document.createElement('iframe'); iframe.src=url; current.appendChild(iframe); }
-  }
+    resultEl.innerText = result;
+    
+    // Color Logic
+    resultEl.classList.remove('text-good', 'text-bad', 'text-neutral');
+    if (result === '-') {
+        resultEl.classList.add('text-neutral');
+    } else {
+        let isGood = false;
+        if (kpi.targetType === 'max') isGood = numResult <= kpi.targetVal;
+        if (kpi.targetType === 'min') isGood = numResult >= kpi.targetVal;
+        
+        resultEl.classList.add(isGood ? 'text-good' : 'text-bad');
+    }
+}
 
-  // ----- Accordion -----
-  function toggleAccordion(button){
-    button.classList.toggle('activeAcc');
-    const panel=document.getElementById(button.getAttribute('aria-controls'));
-    if(panel.style.maxHeight){ panel.style.maxHeight=null; button.setAttribute('aria-expanded','false'); }
-    else{ panel.style.maxHeight=panel.scrollHeight+'px'; button.setAttribute('aria-expanded','true'); }
-  }
-  ['safetyAccordion','dailyTipsAccordion','linksAccordion'].forEach(id=>{
-    const btn=document.getElementById(id);
-    btn.addEventListener('click',()=>toggleAccordion(btn));
-    btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleAccordion(btn); }});
-  });
+// 🆕 Tool Switching Logic
+function switchTool(toolName) {
+    const btns = document.querySelectorAll('.tool-toggle-btn');
+    const kpiSection = document.getElementById('kpiSection');
+    const heatSection = document.getElementById('heatStressSection');
 
-  // ----- Month Color -----
-  (function(){ const cycle=['Red','Blue','Yellow','Green']; const startIndex=9; const m=new Date().getMonth(); const offset=((m-startIndex)%4+4)%4; const color=cycle[offset]; const el=document.getElementById('colorName'); if(el){el.textContent=color; el.style.color=color.toLowerCase(); el.style.fontWeight='700';}})();
+    btns.forEach(btn => {
+        if(btn.dataset.tool === toolName) {
+            btn.classList.add('active-tool');
+        } else {
+            btn.classList.remove('active-tool');
+        }
+    });
 
-  // ----- Daily Safety Tips -----
-  const dailyTips=[
-    "🦺 Always wear proper PPE before entering the site.",
-    "🔧 Inspect your tools and equipment before use.",
-    "🧹 Keep walkways and work areas clear of debris.",
-    "⚠️ Report unsafe conditions immediately to your supervisor.",
-    "🏋️‍♂️ Do not lift heavy objects alone; use proper lifting techniques or equipment.",
-    "📝 Attend daily safety briefings (TBT) and follow instructions carefully.",
-    "🧼 Keep your workspace clean and organized throughout the day.",
-    "⚡ Immediately report any damaged electrical or mechanical equipment.",
-    "🪜 Ensure scaffolds, ladders, and platforms are secure before use.",
-    "✋ Stop work if a hazard presents a serious risk.",
-    "🧗‍♂️ Always use fall protection when working at heights.",
-    "🧤 Wear gloves when handling sharp or rough materials.",
-    "🔥 Check fire extinguishers and emergency exits regularly.",
-    "🏗️ Use caution when operating machinery and follow standard procedures.",
-    "🚫 Avoid horseplay or unsafe behavior on the site.",
-    "🚜 Keep clear of moving equipment and vehicles.",
-    "🔒 Follow lockout/tagout procedures when working on machinery.",
-    "📝 Report near-misses and incidents to improve site safety.",
-    "💧 Maintain hydration and take breaks in extreme weather.",
-    "👀 Be aware of your surroundings and communicate hazards.",
-    "🏋️‍♀️ Use proper lifting techniques to prevent back injuries.",
-    "🩹 Ensure first aid kits are accessible and stocked.",
-    "🧪 Store chemicals and flammable materials safely.",
-    "⚡ Avoid shortcuts that compromise safety procedures.",
-    "🦺 Make sure PPE fits correctly and is worn at all times.",
-    "🪝 Double-check rigging and lifting equipment before use.",
-    "📞 Keep emergency contact numbers readily available.",
-    "🚦 Follow traffic rules in site roads and pedestrian zones.",
-    "🏫 Participate in drills and safety training sessions.",
-    "🤝 Encourage coworkers to follow safe practices and lead by example."
-  ];
-  function showTodayTip(){ const todayIndex=(new Date().getDate()-1)%dailyTips.length; const el=document.getElementById('todayTip'); if(el) el.textContent=dailyTips[todayIndex];}
-  showTodayTip();
+    if (toolName === 'kpi') {
+        kpiSection.style.display = 'block';
+        heatSection.style.display = 'none';
+    } else {
+        kpiSection.style.display = 'none';
+        heatSection.style.display = 'block';
+    }
+}
 
-  // ----- Default Tab -----
-  window.onload=function(){ document.querySelector('.nav-button').click(); };
+// 🆕 Heat Stress Calculation Logic
+function calculateHeatIndex() {
+    const tInput = document.getElementById('inputTemp').value;
+    const hInput = document.getElementById('inputHumidity').value;
+    const resultCard = document.getElementById('heatIndexResultCard');
+    const valueEl = document.getElementById('heatIndexValue');
+    const riskEl = document.getElementById('heatRiskLevel');
+    const listEl = document.getElementById('heatRecommendationsList');
+
+    if (!tInput || !hInput) {
+        resultCard.style.display = 'none';
+        return;
+    }
+
+    const T = parseFloat(tInput);
+    const RH = parseFloat(hInput);
+
+    // Convert C to F for calculation (standard NOAA formula uses F)
+    const T_F = (T * 9/5) + 32;
+    
+    // Simple Heat Index Formula (Rothfusz regression)
+    let HI_F = 0.5 * (T_F + 61.0 + ((T_F-68.0)*1.2) + (RH*0.094));
+
+    if (HI_F >= 80) {
+        HI_F = -42.379 + 2.04901523*T_F + 10.14333127*RH - 0.22475541*T_F*RH - 0.00683783*T_F*T_F - 0.05481717*RH*RH + 0.00122874*T_F*T_F*RH + 0.00085282*T_F*RH*RH - 0.00000199*T_F*T_F*RH*RH;
+    }
+
+    // Convert back to C
+    const HI_C = (HI_F - 32) * 5/9;
+    const displayVal = HI_C.toFixed(1) + '°C';
+    
+    valueEl.innerText = displayVal;
+    resultCard.style.display = 'block';
+
+    // Categorization & Colors
+    let riskLevel = "";
+    let color = "";
+    let recs = "";
+
+    if (HI_C < 27) {
+        riskLevel = "LOW RISK (Safe)";
+        color = "#27ae60"; // Green
+        recs = "<li>Basic hydration required.</li><li>Normal work activity.</li>";
+    } else if (HI_C >= 27 && HI_C < 32) {
+        riskLevel = "CAUTION";
+        color = "#f1c40f"; // Yellow
+        resultCard.style.color = "#333"; // Dark text for yellow bg
+        recs = "<li>Drink water frequently.</li><li>Monitor for fatigue.</li>";
+    } else if (HI_C >= 32 && HI_C < 41) {
+        riskLevel = "EXTREME CAUTION";
+        color = "#e67e22"; // Orange
+        resultCard.style.color = "white";
+        recs = "<li>Drink 1 cup of water every 15-20 mins.</li><li>Take breaks in shade.</li><li>Watch for heat cramps.</li>";
+    } else if (HI_C >= 41 && HI_C < 54) {
+        riskLevel = "DANGER";
+        color = "#c0392b"; // Red
+        resultCard.style.color = "white";
+        recs = "<li>Strict work/rest cycles enforced.</li><li>Limit strenuous work.</li><li>Check workers for heat exhaustion signs.</li>";
+    } else {
+        riskLevel = "EXTREME DANGER";
+        color = "#2c3e50"; // Dark/Black
+        resultCard.style.color = "white";
+        recs = "<li>STOP non-essential work.</li><li>High risk of Heat Stroke.</li><li>Emergency protocols in place.</li>";
+    }
+
+    resultCard.style.backgroundColor = color;
+    riskEl.innerText = riskLevel;
+    listEl.innerHTML = recs;
+}
+
+
+// 🛑 دالة فتح التابات (لم تتغير)
+function openTab(evt, tabName) {
+    var tabcontent = document.getElementsByClassName("tab-content");
+    var navbuttons = document.getElementsByClassName("nav-button");
+    var targetButton = evt.currentTarget || document.querySelector(`.nav-button[onclick*="'${tabName}'"]`);
+    var targetColor = targetButton ? targetButton.getAttribute('data-color') : null;
+    
+    // Hide the floating button for all tabs EXCEPT FormTab (though we removed FormTab, it's safer to keep this logic)
+    // The button should be visible all the time in the new design. It's safe to keep it visible.
+    // document.getElementById('addObservationButton').style.display = (tabName === 'FormTab' ? 'none' : 'block');
+
+    for (var i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove('active');
+    
+    for (var i = 0; i < navbuttons.length; i++) {
+        navbuttons[i].classList.remove("active");
+        navbuttons[i].style.color = ''; 
+    }
+    
+    var currentTab = document.getElementById(tabName);
+    currentTab.classList.add('active');
+
+    if (targetButton) {
+        targetButton.classList.add("active");
+        if (targetColor) {
+            targetButton.style.color = targetColor;
+        }
+    }
+}
+
+function showLeaderboardModal() {
+    const modal = document.getElementById('leaderboardModal');
+    const container = document.getElementById('leaderboardContainer');
+
+    if (leaderboardData.length === 0 || container.innerHTML.includes('fa-spinner')) {
+        container.innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading leaderboard...</div>`;
+    }
+
+    if (leaderboardData.length === 0) {
+        fetchEOMData(true); 
+    } else {
+         renderLeaderboard();
+    }
+
+    modal.style.display = 'block';
+}
+       
+function renderLeaderboard() {
+     const container = document.getElementById('leaderboardContainer');
+     const sortedData = [...leaderboardData].sort((a, b) => b.points - a.points);
+     // ... (HTML table generation code remains the same)
+     let tableHTML = '<table id="leaderboardTable"><thead><tr><th>Rank</th><th>Safety Officer Name</th><th>Points</th></tr></thead><tbody>';
+
+    sortedData.forEach((item, index) => {
+        tableHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td>${item.points}</td>
+            </tr>
+        `;
+    });
+
+    tableHTML += '</tbody></table>';
+    container.innerHTML = tableHTML;
+}
+
+function hideLeaderboardModal() {
+    document.getElementById('leaderboardModal').style.display = 'none';
+}
+
+function showEmergencyContactsModal() {
+    const modal = document.getElementById('emergencyContactsModal');
+    modal.style.display = 'block';
+}
+
+function hideEmergencyContactsModal() {
+    document.getElementById('emergencyContactsModal').style.display = 'none';
+}
+
+// 🟢 دالة إغلاق Modal تأكيد JSA الجديدة (تم الحفاظ عليها بالرغم من عدم استخدامها الآن)
+function hideJSAConfirmationModal() {
+    document.getElementById('jsaConfirmationModal').style.display = 'none';
+}
+
+// 🛑 الكود المصحح لإدارة ألوان الأكورديون (Accordion Click Handler)
+document.addEventListener('click', function(e) {
+    const accordion = e.target.closest('.accordion');
+    
+    if (accordion) {
+        // إذا كان زر يفتح Modal (مثل Monthly Leaderboard و EMERGENCY CONTACTS)، لا نعالجه هنا
+        if (accordion.onclick) return; 
+
+        const isActive = accordion.classList.contains('activeAcc');
+        const color = accordion.getAttribute('data-color');
+        let panel = accordion.nextElementSibling;
+
+        // 1. إعادة ضبط الألوان والحالة لجميع الأكورديونات غير الخاصة بالـ Modal وغير JSA
+        document.querySelectorAll('.accordion').forEach(acc => {
+            // نتحقق من فئة 'jsa-accordion-item' أيضاً لعدم تدخل أكورديون InfoTab مع JSA
+            if (!acc.onclick && !acc.classList.contains('jsa-accordion-item')) { 
+                 acc.classList.remove('activeAcc');
+                 acc.style.backgroundColor = ''; 
+                 acc.style.color = ''; 
+                 // إزالة الـ inline style الخاص بـ border-color إذا كان موجوداً
+                 if(acc.nextElementSibling && acc.nextElementSibling.classList.contains('panel')) {
+                     acc.nextElementSibling.style.display = 'none';
+                     acc.nextElementSibling.style.color = ''; 
+                 }
+            }
+        });
+        
+        // 2. تفعيل الأكورديون الحالي وتطبيق الألوان
+        if (!isActive && !accordion.classList.contains('jsa-accordion-item')) {
+            accordion.classList.add('activeAcc');
+            
+            // تطبيق اللون المخصص على زر الأكورديون
+            if (color) {
+                // نستخدم اللون المخصص كخلفية، ونقلب لون النص إلى أبيض
+                accordion.style.backgroundColor = color;
+                accordion.style.color = 'white'; 
+            }
+            
+            if(panel && panel.classList.contains('panel')) {
+                 panel.style.display = 'block';
+                 // تطبيق اللون على Panel (لأجل border-left والنقاط)
+                 if (color) {
+                     panel.style.color = color;
+                 }
+            }
+        } 
+    }
+});
+function loadTBTOfTheDay() {
+    const tbtPanel = document.getElementById('tbtPanel');
+    const tbtAccordion = document.getElementById('tbtAccordion');
+    const defaultIcon = "fas fa-book-open"; // أيقونة افتراضية للـ TBT
+    
+    if (!tbtPanel || !tbtAccordion || tbtData.length === 0) return;
+    
+    // حساب مؤشر TBT لهذا اليوم بناءً على رقم اليوم في السنة
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 0);
+    const diff = today - startOfYear;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    
+    // استخدام معامل القسمة للتكرار على قائمة TBTs
+    const index = dayOfYear % tbtData.length;
+    const tbt = tbtData[index]; // الآن tbt تحتوي على { title, link }
+    
+    // تحديد اللون الأساسي للـ TBT Panel والـ link
+    const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+    
+    
+    // 1. تحديث عنوان الأكورديون والرمز
+    tbtAccordion.innerHTML = `<i class="${defaultIcon}"></i> ${tbt.title}`;
+    
+    // 2. بناء محتوى اللوحة (Panel) مع الرابط المطلوب
+    tbtPanel.innerHTML = `
+        <p style="margin-top:0; color:var(--text-muted); font-size:14px;">Tap the link below to open the daily documenfoodt.</p>
+        <a href="${tbt.link}" target="_blank" style="color:${linkColor}; font-weight:bold; text-decoration:none; display:block; margin-top:10px; font-size:15px;">
+            🔗 Open: ${tbt.title}
+        </a>
+    `;
+    
+    // لضمان أن لون الـ border-left الخاص بالـ panel يتطابق مع الـ primary-color
+    tbtPanel.style.color = linkColor;
+}
+
+(function setMonthColor() {
+    const cycle = ['Red','Blue','Yellow','Green'];
+    const startIndexMonth = 9;
+    const m = new Date().getMonth();
+    const offset = ((m - startIndexMonth) % 4 + 4) % 4;
+    const color = cycle[offset];
+    const colorNameEl = document.getElementById('colorName');
+    if (colorNameEl) {
+        colorNameEl.textContent = color;
+        colorNameEl.style.color = color.toLowerCase();
+    }
+})();
+
+function fetchEOMData(forceRender = false) {
+    fetch(eomSheetUrl)
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            return res.text();
+        })
+        .then(csvText => {
+            const rows = csvText.split('\n').slice(1);
+            leaderboardData = []; 
+            let maxPoints = -1;
+            let topEmployee = '';
+
+            rows.forEach(row => {
+                if(row.trim() === '') return;
+                const cols = row.split(',').map(col => col.replace(/["']/g,'').trim());
+
+                const name = cols[0];
+                const points = parseFloat(cols[1]);
+
+                if(!isNaN(points) && name.trim() !== '') {
+                    leaderboardData.push({ name: name, points: points });
+
+                    if(points > maxPoints){
+                        maxPoints = points;
+                        topEmployee = name.trim();
+                    }
+                }
+            });
+
+            const el = document.getElementById('employeeOfMonth');
+            if(el) el.textContent = topEmployee || 'No data (Check sheet data)';
+
+            if (forceRender || document.getElementById('leaderboardModal').style.display === 'block') {
+                 renderLeaderboard();
+            }
+        })
+        .catch(err => {
+            const el = document.getElementById('employeeOfMonth');
+            if(el) el.textContent = 'Error loading data (Link Check)';
+
+            const leaderboardContainer = document.getElementById('leaderboardContainer');
+            if(leaderboardContainer) leaderboardContainer.innerHTML = `<p style='text-align:center; color: var(--danger-color);'>Failed to load leaderboard data.</p>`;
+
+            console.error('Error fetching Employee of the Month:', err);
+        });
+}
+
+// 🟢 التعديل الثالث: تعديل دالة JSA List لإنشاء أكورديون داخلي
+function renderJSAList(data) {
+    const container = document.getElementById('jsaListContainer');
+    container.innerHTML = ''; // Clear existing list
+    const jsaColor = getComputedStyle(document.documentElement).getPropertyValue('--jsa-color');
+
+    if (data.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color: var(--text-muted); margin-top:20px;">No matching JSA found.</p>`;
+        return;
+    }
+
+    data.forEach(item => {
+        // 1. إنشاء زر الأكورديون (الرأس)
+        const button = document.createElement('button');
+        // نستخدم 'accordion' ولكن بفئة 'jsa-accordion-item' لتمييزه
+        button.className = 'accordion jsa-accordion-item'; 
+        button.setAttribute('data-color', jsaColor);
+        // نستخدم <i> عادية هنا لتطبق عليها أنماط .jsa-accordion-item i 
+        button.innerHTML = `<i class="fas fa-file-pdf"></i> ${item.title}`; 
+        
+        // 2. إنشاء محتوى الأكورديون (الـ panel)
+        const panel = document.createElement('div');
+        // نستخدم 'panel' ولكن بفئة 'jsa-panel' لتمييزه
+        panel.className = 'panel jsa-panel'; 
+        
+        // 3. بناء الرابط داخل قائمة داخل الـ panel
+        panel.innerHTML = `
+            <ul>
+                <li>
+                    <a href="${item.link}" target="_blank" style="color:${jsaColor}; font-weight:bold; text-decoration:none;">
+                        🔗 Open JSA Document (${item.title})
+                    </a>
+                </li>
+            </ul>
+        `;
+        
+        container.appendChild(button);
+        container.appendChild(panel);
+
+        // 4. إضافة معالج الحدث (Event Listener) لتشغيل وظيفة الأكورديون
+        button.addEventListener('click', function() {
+            // نستخدم نفس منطق الأكورديون ولكن نحدده على فئة jsa-accordion-item فقط
+            const isActive = this.classList.contains('activeAcc');
+            
+            // إعادة ضبط الألوان والحالة لجميع الأكورديونات JSA غير النشطة
+            document.querySelectorAll('.jsa-accordion-item').forEach(acc => {
+                 if (acc !== this) {
+                     acc.classList.remove('activeAcc');
+                     acc.style.backgroundColor = ''; 
+                     acc.style.color = ''; 
+                     if(acc.nextElementSibling && acc.nextElementSibling.classList.contains('jsa-panel')) {
+                         acc.nextElementSibling.style.display = 'none';
+                     }
+                 }
+            });
+
+            // تفعيل أو إلغاء تفعيل العنصر الحالي
+            if (!isActive) {
+                this.classList.add('activeAcc');
+                this.style.backgroundColor = jsaColor;
+                this.style.color = 'white';
+                panel.style.display = 'block';
+                panel.style.color = jsaColor; // لضبط لون الخط الجانبي والنقاط
+            } else {
+                this.classList.remove('activeAcc');
+                this.style.backgroundColor = '';
+                this.style.color = '';
+                panel.style.display = 'none';
+            }
+        });
+    });
+}
+
+function filterJSAList() {
+    const searchTerm = document.getElementById('jsaSearch').value.toLowerCase().trim();
+    if (!searchTerm) {
+        renderJSAList(jsaData); // Show all if no search term
+        return;
+    }
+
+    const filteredData = jsaData.filter(jsa => 
+        jsa.title.toLowerCase().includes(searchTerm)
+    );
+
+    renderJSAList(filteredData);
+}
+
+// 🆕 دالة تبديل الوضع (Dark/Light Mode)
+function toggleDarkMode() {
+    const body = document.body;
+    const isDarkMode = body.classList.toggle('dark-mode');
+    const modeIcon = document.getElementById('modeIcon');
+    
+    // تحديث الأيقونة والنص
+    if (modeIcon) {
+        modeIcon.classList.remove(isDarkMode ? 'fa-sun' : 'fa-moon');
+        modeIcon.classList.add(isDarkMode ? 'fa-moon' : 'fa-sun');
+    }
+    
+    // حفظ التفضيل (اختياري، لكن يوصى به)
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    
+    // لإعادة تطبيق الألوان على العناصر التي تستخدم inline style أو ترث من body/root
+    renderJSAList(jsaData); // إعادة رسم قائمة JSA لضبط ألوانها
+    loadTBTOfTheDay(); // إعادة تحميل TBT لضبط لونه
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 🆕 تطبيق التفضيل المحفوظ عند التحميل
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        const modeIcon = document.getElementById('modeIcon');
+        if (modeIcon) {
+             modeIcon.classList.remove('fa-sun');
+             modeIcon.classList.add('fa-moon');
+        }
+    } else {
+         const modeIcon = document.getElementById('modeIcon');
+         if (modeIcon) {
+             modeIcon.classList.add('fa-sun'); // Default icon for Light Mode
+         }
+    }
+
+    // 🛑 تطبيق اللون المخصص للزر النشط افتراضيًا عند تحميل الصفحة
+    const infoButton = document.querySelector('.nav-button[onclick*="InfoTab"]');
+    if(infoButton) {
+        document.getElementById('InfoTab').classList.add('active');
+        infoButton.classList.add('active');
+        const defaultColor = infoButton.getAttribute('data-color');
+        if (defaultColor) {
+            infoButton.style.color = defaultColor;
+        }
+    }
+
+
+    const eomCard = document.getElementById('eomCard');
+    const leaderboardModal = document.getElementById('leaderboardModal');
+    const emergencyModal = document.getElementById('emergencyContactsModal');
+    const jsaConfirmationModal = document.getElementById('jsaConfirmationModal');
+
+
+    if (eomCard) eomCard.addEventListener('click', showLeaderboardModal);
+
+    window.addEventListener('click', (event) => {
+         // 🟢 إضافة Modal تأكيد JSA لآلية الإغلاق
+         if (event.target == leaderboardModal) hideLeaderboardModal();
+         if (event.target == emergencyModal) hideEmergencyContactsModal();
+         if (event.target == jsaConfirmationModal) hideJSAConfirmationModal();
+    });
+    
+    // 🟢 إضافة معالج حدث لزر التأكيد داخل Modal الـ JSA (تم إبقاؤه لكنه لن يُستخدم الآن)
+    document.getElementById('driveLinkConfirm').addEventListener('click', () => {
+        // نغلق الـ modal بعد الضغط على الرابط (لأنه سيفتح في نافذة جديدة)
+        hideJSAConfirmationModal();
+    });
+
+
+    // Set the current Month and Year
+    const now = new Date();
+    const options = { month: 'long', year: 'numeric' };
+    const currentMonthYear = now.toLocaleDateString('en-US', options);
+    const cardTitleElement = document.getElementById('eomCardTitle');
+    if (cardTitleElement) {
+        cardTitleElement.innerHTML = `<i class="fas fa-trophy" style="color: #FFD700;"></i> Employee of the Month (${currentMonthYear})`;
+    }
+
+    // --- Employee of the Month/Leaderboard Data Fetch ---
+    fetchEOMData();
+    loadTBTOfTheDay();
+    // --- JSA Tab Initialization ---
+    renderJSAList(jsaData);
+    document.getElementById('jsaSearch').addEventListener('input', filterJSAList);
+
+
+    // --- Load News from Google Sheet (Code remains the same) ---
+    const newsSheetUrl = 'https://docs.google.com/spreadsheets/d/1_SwxL5f4mWF5kd2yofCMCEE_WQp_2eroHDhXXPXtw1U/export?format=csv&gid=0';
+    fetch(newsSheetUrl)
+        .then(res => res.text())
+        .then(csvText => {
+            const rows = csvText.split('\n').slice(1);
+            const container = document.getElementById('AnnouncementsContainer');
+            container.innerHTML = ''; 
+
+            rows.forEach(row => {
+                if(row.trim() === '') return;
+
+                const parts = row.match(/(".*?"|[^,]+)/g) || [];
+                const [date, title, content] = parts.map(p => p.trim().replace(/^"|"$/g, ''));
+
+                const card = document.createElement('div');
+                card.className = 'announcement-card';
+
+                const isContentEmpty = !content || content === 'NULL';
+                const cursorStyle = isContentEmpty ? 'default' : 'pointer';
+
+                card.innerHTML = `
+                    <div class="card-date">${date || ''}</div>
+                    <div class="card-title" style="cursor: ${cursorStyle};">
+                        ${title || 'No Title'}
+                        ${!isContentEmpty ? '<i class="fas fa-chevron-down toggle-icon"></i>' : ''}
+                    </div>
+                    <div class="card-content">${content || 'No detailed content available.'}</div>
+                `;
+                container.appendChild(card);
+
+                if (!isContentEmpty) {
+                    const titleDiv = card.querySelector('.card-title');
+                    const contentDiv = card.querySelector('.card-content');
+
+                    titleDiv.addEventListener('click', () => {
+                        const isOpen = contentDiv.style.display === 'block';
+                        contentDiv.style.display = isOpen ? 'none' : 'block';
+                        titleDiv.classList.toggle('open', !isOpen);
+                    });
+                }
+            });
+        })
+        .catch(err => {
+            const container = document.getElementById('AnnouncementsContainer');
+            container.innerHTML = `<div class="announcement-card">
+                                     <div class="card-date">Error</div>
+                                     <div class="card-title" style="cursor:default;">Failed to fetch news</div>
+                                     <div class="card-content" style="display:block; color: var(--danger-color);">Check the link or network connection.</div>
+                                   </div>`;
+            console.error('Error loading news:', err);
+        });
+    
+    // 🆕 Initialize KPIs
+    renderKPIs();
+});
 </script>
 </body>
 </html>
