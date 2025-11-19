@@ -29,6 +29,7 @@
           --jsa-color: #3498DB; /* Blue for JSA tab */
           --kpi-color: #8e44ad; /* 🆕 Purple for KPI tab */
           --heat-color: #e67e22; /* 🆕 Orange for Heat Stress */
+          --wind-color: #00BCD4; /* 🆕 Cyan/Blue for Wind Speed */
           --background-color: #FFFFFF; /* Main white background */
           --body-background-color: var(--accent-light); /* Off-white for body */
           --text-color: #2C3E50; /* Main text color */
@@ -46,10 +47,10 @@
           --dark-hover-bg: #3c3c3c;
 
 
-          /* Mobile Defaults */
-          --app-max-width: 500px;
-          --app-height: 90vh;
-          --app-margin: 0 auto;
+          /* 🟢 UPDATED: Full Screen Mobile Defaults */
+          --app-max-width: 500px; /* Full width */
+          --app-height: 95vh; /* Dynamic Viewport Height (fills screen completely) */
+          --app-margin: 0; /* Remove margin */
         }
 
         /* 🌙 Dark Mode Override */
@@ -93,10 +94,10 @@
             height: var(--app-height);
             width: 100%;
             max-width: var(--app-max-width);
-            margin: 0 auto; /* Centering */
+            margin: var(--app-margin); 
             background-color:var(--background-color);
             box-shadow:var(--app-container-shadow, 0 8px 20px rgba(0,0,0,0.1));
-            border-radius: 12px;
+            border-radius: 0; 
             overflow: hidden;
             position: relative; /* Ensure containment */
             transition: background-color 0.3s, box-shadow 0.3s;
@@ -164,11 +165,11 @@
         .content-area {
             flex-grow:1;
             overflow-y:auto;
-            /* 🟢 UPDATED: Increased margin to ensure floating button doesn't cover content */
             margin-bottom: 0; 
             padding: 15px;
             width: 100%; /* Ensure full width alignment */
-            padding-bottom: 150px; /* Extra space for scrolling past floating button */
+            /* 🟢 UPDATED: Removed extra padding on container, moved to Spacer Div logic */
+            padding-bottom: 0px; 
         }
         
         .tab-content {
@@ -181,18 +182,23 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* Iframe alignment fixes */
+        /* 🟢 UPDATED: Iframe Clearance */
+        /* This ensures Google Sheets/Forms stop BEFORE the floating button area */
         iframe {
             width:100%;
-            height: 100%;
+            height: calc(100% - 160px); /* Stops the iframe frame above the button */
             border:none;
             border-radius: 8px;
-            background: white; /* Fallback */
+            background: white; 
         }
         
-        /* Info Tab alignment fixes */
-        #InfoTab, #ToolsTab, #JSATab {
-            padding-bottom: 80px; 
+        /* 🟢 NEW: Tab Spacer */
+        /* This pushes text content up so the last item is above the button */
+        .tab-spacer {
+            height: 160px;
+            width: 100%;
+            display: block;
+            clear: both;
         }
 
         /* 🟢 2. Announcement Card Styles */
@@ -416,7 +422,7 @@
             background-color:var(--card-background);
             box-shadow:0 -5px 20px rgba(0,0,0,0.1);
             z-index:10;
-            border-radius: 0 0 12px 12px;
+            border-radius: 0; /* Overriding for full width look */
             transition: background-color 0.3s, box-shadow 0.3s;
         }
         .dark-mode .nav-bar {
@@ -466,7 +472,7 @@
             display: none; position: absolute; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
             background-color: rgba(0,0,0,0.6); 
             padding-top: 60px;
-            border-radius: 12px; /* Clip to container */
+            border-radius: 0; /* 🟢 UPDATED: No radius */
             animation: fadeIn 0.3s ease-out; 
         }
         .modal-content {
@@ -654,8 +660,12 @@
         .tool-toggle-btn.active-tool[data-tool="heat"] {
             background-color: var(--heat-color);
         }
+        /* 🆕 NEW: Active style for Wind Speed */
+        .tool-toggle-btn.active-tool[data-tool="wind"] {
+            background-color: var(--wind-color);
+        }
         
-        #heatIndexResultCard {
+        #heatIndexResultCard, #windSpeedResultCard {
             display: none;
             padding: 25px;
             border-radius: 12px;
@@ -665,31 +675,31 @@
             transition: background-color 0.3s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
-        .heat-value {
+        .heat-value, .wind-value {
             font-size: 42px;
             font-weight: 800;
             margin: 10px 0;
             font-family: 'Poppins', sans-serif;
         }
-        .heat-category {
+        .heat-category, .wind-category {
             font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
         }
-        .heat-recommendations {
+        .heat-recommendations, .wind-recommendations {
             font-size: 14px;
             background-color: rgba(0,0,0,0.15);
             padding: 15px;
             border-radius: 8px;
             text-align: left;
         }
-        .heat-recommendations ul {
+        .heat-recommendations ul, .wind-recommendations ul {
             margin: 0;
             padding-left: 20px;
         }
-        .heat-recommendations li {
+        .heat-recommendations li, .wind-recommendations li {
             margin-bottom: 5px;
         }
 
@@ -753,10 +763,14 @@
         /* Desktop Overrides */
         @media (min-width: 768px) {
             :root {
+                /* 🟢 UPDATED: Restore "app-like" feel on Desktop only */
                 --app-max-width: 1000px; 
                 --app-height: 95vh;
                 --app-margin: 2.5vh auto;
             }
+            
+            .app-container { border-radius: 12px; }
+            .nav-bar { border-radius: 0 0 12px 12px; }
 
             iframe { height: 100%; }
             
@@ -879,10 +893,14 @@
                     <i class="fas fa-spinner fa-spin"></i> Fetching news...
                 </div>
             </div>
+            <!-- 🟢 SPACER for News -->
+            <div class="tab-spacer"></div>
         </div>
         
         <div id="FormTab" class="tab-content">
             <h3 style="text-align:center; color:var(--primary-color);">Click the floating button "Add New Observation" to open the form.</h3>
+            <!-- 🟢 SPACER for Form -->
+            <div class="tab-spacer"></div>
         </div>
 
         <div id="DataTab" class="tab-content">
@@ -896,6 +914,8 @@
         <div id="JSATab" class="tab-content">
             <input type="text" id="jsaSearch" placeholder="Search JSA titles (e.g., Loading unloading)...">
             <div id="jsaListContainer"></div>
+            <!-- 🟢 SPACER for JSA -->
+            <div class="tab-spacer"></div>
         </div>
 
         <div id="ToolsTab" class="tab-content">
@@ -904,6 +924,8 @@
             <div class="tool-toggle-container">
                 <button class="tool-toggle-btn active-tool" data-tool="kpi" onclick="switchTool('kpi')">Safety KPIs</button>
                 <button class="tool-toggle-btn" data-tool="heat" onclick="switchTool('heat')">Heat Stress</button>
+                <!-- 🆕 NEW: Wind Speed Button -->
+                <button class="tool-toggle-btn" data-tool="wind" onclick="switchTool('wind')">Wind Limits</button>
             </div>
 
             <!-- KPI Section -->
@@ -955,6 +977,37 @@
                 </div>
             </div>
 
+            <!-- 🆕 NEW: Wind Speed Section -->
+            <div id="windSpeedSection" style="display:none;">
+                <div style="text-align:center; margin-bottom:15px; color:var(--wind-color);">
+                    <i class="fas fa-wind fa-2x"></i>
+                    <h3 style="margin:5px 0;">Wind Speed Safety Limits</h3>
+                    <small style="color:var(--text-muted);">Based on CSM Vol II (Cranes & Manbaskets)</small>
+                </div>
+                
+                <div class="kpi-card" style="border-left-color: var(--wind-color);">
+                    <div class="kpi-input-group">
+                        <label>Current Wind Speed (km/h)</label>
+                        <input type="number" id="inputWind" class="kpi-input-field" placeholder="e.g., 25" oninput="calculateWindSafety()">
+                    </div>
+                </div>
+
+                <div id="windSpeedResultCard">
+                    <div style="font-size:12px; opacity:0.9;">STATUS</div>
+                    <div class="wind-value" id="windValue">--</div>
+                    <div class="wind-category" id="windRiskLevel">--</div>
+                    
+                    <div class="wind-recommendations">
+                        <div style="font-weight:bold; margin-bottom:5px;">⚠️ Operational Restrictions (CSM Vol II):</div>
+                        <ul id="windRecommendationsList">
+                            <li>Enter wind speed to see limits.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🟢 SPACER for Tools -->
+            <div class="tab-spacer"></div>
         </div>
         <!-- End Tools Tab -->
 
@@ -1061,6 +1114,9 @@
                     <li><a href="https://drive.google.com/file/d/109vG3Hk3PdgvQF87k0EJ1IiKDTDfdQTv/view?usp=sharing" target="_blank">📗 Saudi Aramco Safety HandBook</a></li>
                 </ul>
             </div>
+
+            <!-- 🟢 SPACER for Info -->
+            <div class="tab-spacer"></div>
         </div>
 
     </div>
@@ -1190,6 +1246,7 @@ const jsaData = [
 
 ];
 
+// 🆕 KPI Data & Logic
 const kpiData = [
     {
       id: 1, category: "Lagging", name: "TRIR (Total Recordable Incident Rate)", formula: "rate_200k",
@@ -1319,10 +1376,12 @@ function calculateKPI(id) {
     }
 }
 
+// 🆕 Tool Switching Logic
 function switchTool(toolName) {
     const btns = document.querySelectorAll('.tool-toggle-btn');
     const kpiSection = document.getElementById('kpiSection');
     const heatSection = document.getElementById('heatStressSection');
+    const windSection = document.getElementById('windSpeedSection');
 
     btns.forEach(btn => {
         if(btn.dataset.tool === toolName) {
@@ -1332,16 +1391,21 @@ function switchTool(toolName) {
         }
     });
 
+    // Hide all first
+    kpiSection.style.display = 'none';
+    heatSection.style.display = 'none';
+    windSection.style.display = 'none';
+
     if (toolName === 'kpi') {
         kpiSection.style.display = 'block';
-        heatSection.style.display = 'none';
-    } else {
-        kpiSection.style.display = 'none';
+    } else if (toolName === 'heat') {
         heatSection.style.display = 'block';
+    } else if (toolName === 'wind') {
+        windSection.style.display = 'block';
     }
 }
 
-// 🟢 UPDATED: Heat Index Logic to match Aramco Safety Handbook (Section 4)
+// 🆕 Heat Stress Calculation Logic
 function calculateHeatIndex() {
     const tInput = document.getElementById('inputTemp').value;
     const hInput = document.getElementById('inputHumidity').value;
@@ -1375,7 +1439,7 @@ function calculateHeatIndex() {
     valueEl.innerText = displayVal;
     resultCard.style.display = 'block';
 
-    // Categorization & Colors (Based on Saudi Aramco Safety Handbook Section 4)
+    // Categorization & Colors
     let riskLevel = "";
     let color = "";
     let recs = "";
@@ -1387,7 +1451,7 @@ function calculateHeatIndex() {
     } else if (HI_C >= 27 && HI_C < 32) {
         riskLevel = "CAUTION";
         color = "#f1c40f"; // Yellow
-        resultCard.style.color = "#333"; 
+        resultCard.style.color = "#333"; // Dark text for yellow bg
         recs = "<li>Hydration: Drink water freely (Min 1 cup / 20 min).</li><li>Activity: Monitor for fatigue.</li>";
     } else if (HI_C >= 32 && HI_C < 41) {
         riskLevel = "EXTREME CAUTION";
@@ -1410,6 +1474,60 @@ function calculateHeatIndex() {
     riskEl.innerText = riskLevel;
     listEl.innerHTML = recs;
 }
+
+// 🟢 🆕 NEW: Wind Speed Safety Logic
+function calculateWindSafety() {
+    const wInput = document.getElementById('inputWind').value;
+    const resultCard = document.getElementById('windSpeedResultCard');
+    const valueEl = document.getElementById('windValue');
+    const riskEl = document.getElementById('windRiskLevel');
+    const listEl = document.getElementById('windRecommendationsList');
+
+    if (!wInput) {
+        resultCard.style.display = 'none';
+        return;
+    }
+
+    const windSpeed = parseFloat(wInput);
+    valueEl.innerText = windSpeed.toFixed(1) + ' km/h';
+    resultCard.style.display = 'block';
+
+    let riskLevel = "";
+    let color = "";
+    let recs = "";
+
+    if (windSpeed < 20) {
+        riskLevel = "SAFE";
+        color = "#27ae60"; // Green
+        recs = "<li>Safe for most operations.</li><li>Monitor changes.</li>";
+    } else if (windSpeed >= 20 && windSpeed <= 25) {
+        riskLevel = "CAUTION";
+        color = "#f1c40f"; // Yellow
+        resultCard.style.color = "#333"; 
+        recs = "<li>Approaching limit for Manbaskets.</li><li>Secure loose materials.</li>";
+    } else if (windSpeed > 25 && windSpeed <= 32) {
+        riskLevel = "RESTRICTED";
+        color = "#e67e22"; // Orange
+        resultCard.style.color = "white"; 
+        recs = "<li><b>STOP:</b> Manbasket (Personnel Platform) operations prohibited (>25 km/h). (CSM II-1.4.3.4)</li><li>Crane lifting permitted with caution.</li>";
+    } else if (windSpeed > 32) {
+        riskLevel = "DANGER - STOP LIFTING";
+        color = "#c0392b"; // Red
+        resultCard.style.color = "white"; 
+        recs = "<li><b>STOP:</b> All Crane Lifting Operations prohibited (>32 km/h). (CSM II-1.3.1)</li><li><b>STOP:</b> Manbasket operations.</li><li>Secure cranes as per manufacturer.</li>";
+    } 
+    
+    // General high wind for scaffolding (often cited >50-65km/h but good to warn early)
+    if (windSpeed > 50) {
+        recs += "<li><b>STOP:</b> Work at height / Scaffolding.</li>";
+        riskLevel = "HIGH DANGER";
+    }
+
+    resultCard.style.backgroundColor = color;
+    riskEl.innerText = riskLevel;
+    listEl.innerHTML = recs;
+}
+
 
 // 🟢 NEW: GPS Location Function
 function getGPSLocation() {
@@ -1443,13 +1561,17 @@ function getGPSLocation() {
     );
 }
 
-
+// 🛑 دالة فتح التابات (لم تتغير)
 function openTab(evt, tabName) {
     var tabcontent = document.getElementsByClassName("tab-content");
     var navbuttons = document.getElementsByClassName("nav-button");
     var targetButton = evt.currentTarget || document.querySelector(`.nav-button[onclick*="'${tabName}'"]`);
     var targetColor = targetButton ? targetButton.getAttribute('data-color') : null;
     
+    // Hide the floating button for all tabs EXCEPT FormTab (though we removed FormTab, it's safer to keep this logic)
+    // The button should be visible all the time in the new design. It's safe to keep it visible.
+    // document.getElementById('addObservationButton').style.display = (tabName === 'FormTab' ? 'none' : 'block');
+
     for (var i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove('active');
     
     for (var i = 0; i < navbuttons.length; i++) {
@@ -1488,6 +1610,7 @@ function showLeaderboardModal() {
 function renderLeaderboard() {
      const container = document.getElementById('leaderboardContainer');
      const sortedData = [...leaderboardData].sort((a, b) => b.points - a.points);
+     // ... (HTML table generation code remains the same)
      let tableHTML = '<table id="leaderboardTable"><thead><tr><th>Rank</th><th>Safety Officer Name</th><th>Points</th></tr></thead><tbody>';
 
     sortedData.forEach((item, index) => {
@@ -1517,25 +1640,31 @@ function hideEmergencyContactsModal() {
     document.getElementById('emergencyContactsModal').style.display = 'none';
 }
 
+// 🟢 دالة إغلاق Modal تأكيد JSA الجديدة (تم الحفاظ عليها بالرغم من عدم استخدامها الآن)
 function hideJSAConfirmationModal() {
     document.getElementById('jsaConfirmationModal').style.display = 'none';
 }
 
+// 🛑 الكود المصحح لإدارة ألوان الأكورديون (Accordion Click Handler)
 document.addEventListener('click', function(e) {
     const accordion = e.target.closest('.accordion');
     
     if (accordion) {
+        // إذا كان زر يفتح Modal (مثل Monthly Leaderboard و EMERGENCY CONTACTS)، لا نعالجه هنا
         if (accordion.onclick) return; 
 
         const isActive = accordion.classList.contains('activeAcc');
         const color = accordion.getAttribute('data-color');
         let panel = accordion.nextElementSibling;
 
+        // 1. إعادة ضبط الألوان والحالة لجميع الأكورديونات غير الخاصة بالـ Modal وغير JSA
         document.querySelectorAll('.accordion').forEach(acc => {
+            // نتحقق من فئة 'jsa-accordion-item' أيضاً لعدم تدخل أكورديون InfoTab مع JSA
             if (!acc.onclick && !acc.classList.contains('jsa-accordion-item')) { 
                  acc.classList.remove('activeAcc');
                  acc.style.backgroundColor = ''; 
                  acc.style.color = ''; 
+                 // إزالة الـ inline style الخاص بـ border-color إذا كان موجوداً
                  if(acc.nextElementSibling && acc.nextElementSibling.classList.contains('panel')) {
                      acc.nextElementSibling.style.display = 'none';
                      acc.nextElementSibling.style.color = ''; 
@@ -1543,16 +1672,20 @@ document.addEventListener('click', function(e) {
             }
         });
         
+        // 2. تفعيل الأكورديون الحالي وتطبيق الألوان
         if (!isActive && !accordion.classList.contains('jsa-accordion-item')) {
             accordion.classList.add('activeAcc');
             
+            // تطبيق اللون المخصص على زر الأكورديون
             if (color) {
+                // نستخدم اللون المخصص كخلفية، ونقلب لون النص إلى أبيض
                 accordion.style.backgroundColor = color;
                 accordion.style.color = 'white'; 
             }
             
             if(panel && panel.classList.contains('panel')) {
                  panel.style.display = 'block';
+                 // تطبيق اللون على Panel (لأجل border-left والنقاط)
                  if (color) {
                      panel.style.color = color;
                  }
@@ -1563,29 +1696,37 @@ document.addEventListener('click', function(e) {
 function loadTBTOfTheDay() {
     const tbtPanel = document.getElementById('tbtPanel');
     const tbtAccordion = document.getElementById('tbtAccordion');
-    const defaultIcon = "fas fa-book-open";
+    const defaultIcon = "fas fa-book-open"; // أيقونة افتراضية للـ TBT
     
     if (!tbtPanel || !tbtAccordion || tbtData.length === 0) return;
     
+    // حساب مؤشر TBT لهذا اليوم بناءً على رقم اليوم في السنة
     const today = new Date();
     const startOfYear = new Date(today.getFullYear(), 0, 0);
     const diff = today - startOfYear;
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
     
+    // استخدام معامل القسمة للتكرار على قائمة TBTs
     const index = dayOfYear % tbtData.length;
-    const tbt = tbtData[index];
+    const tbt = tbtData[index]; // الآن tbt تحتوي على { title, link }
     
+    // تحديد اللون الأساسي للـ TBT Panel والـ link
     const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
     
+    
+    // 1. تحديث عنوان الأكورديون والرمز
     tbtAccordion.innerHTML = `<i class="${defaultIcon}"></i> ${tbt.title}`;
     
+    // 2. بناء محتوى اللوحة (Panel) مع الرابط المطلوب
     tbtPanel.innerHTML = `
         <p style="margin-top:0; color:var(--text-muted); font-size:14px;">Tap the link below to open the daily document.</p>
         <a href="${tbt.link}" target="_blank" style="color:${linkColor}; font-weight:bold; text-decoration:none; display:block; margin-top:10px; font-size:15px;">
             🔗 Open: ${tbt.title}
         </a>
     `;
+    
+    // لضمان أن لون الـ border-left الخاص بالـ panel يتطابق مع الـ primary-color
     tbtPanel.style.color = linkColor;
 }
 
@@ -1649,9 +1790,10 @@ function fetchEOMData(forceRender = false) {
         });
 }
 
+// 🟢 التعديل الثالث: تعديل دالة JSA List لإنشاء أكورديون داخلي
 function renderJSAList(data) {
     const container = document.getElementById('jsaListContainer');
-    container.innerHTML = ''; 
+    container.innerHTML = ''; // Clear existing list
     const jsaColor = getComputedStyle(document.documentElement).getPropertyValue('--jsa-color');
 
     if (data.length === 0) {
@@ -1660,14 +1802,20 @@ function renderJSAList(data) {
     }
 
     data.forEach(item => {
+        // 1. إنشاء زر الأكورديون (الرأس)
         const button = document.createElement('button');
+        // نستخدم 'accordion' ولكن بفئة 'jsa-accordion-item' لتمييزه
         button.className = 'accordion jsa-accordion-item'; 
         button.setAttribute('data-color', jsaColor);
+        // نستخدم <i> عادية هنا لتطبق عليها أنماط .jsa-accordion-item i 
         button.innerHTML = `<i class="fas fa-file-pdf"></i> ${item.title}`; 
         
+        // 2. إنشاء محتوى الأكورديون (الـ panel)
         const panel = document.createElement('div');
+        // نستخدم 'panel' ولكن بفئة 'jsa-panel' لتمييزه
         panel.className = 'panel jsa-panel'; 
         
+        // 3. بناء الرابط داخل قائمة داخل الـ panel
         panel.innerHTML = `
             <ul>
                 <li>
@@ -1681,9 +1829,12 @@ function renderJSAList(data) {
         container.appendChild(button);
         container.appendChild(panel);
 
+        // 4. إضافة معالج الحدث (Event Listener) لتشغيل وظيفة الأكورديون
         button.addEventListener('click', function() {
+            // نستخدم نفس منطق الأكورديون ولكن نحدده على فئة jsa-accordion-item فقط
             const isActive = this.classList.contains('activeAcc');
             
+            // إعادة ضبط الألوان والحالة لجميع الأكورديونات JSA غير النشطة
             document.querySelectorAll('.jsa-accordion-item').forEach(acc => {
                  if (acc !== this) {
                      acc.classList.remove('activeAcc');
@@ -1695,12 +1846,13 @@ function renderJSAList(data) {
                  }
             });
 
+            // تفعيل أو إلغاء تفعيل العنصر الحالي
             if (!isActive) {
                 this.classList.add('activeAcc');
                 this.style.backgroundColor = jsaColor;
                 this.style.color = 'white';
                 panel.style.display = 'block';
-                panel.style.color = jsaColor;
+                panel.style.color = jsaColor; // لضبط لون الخط الجانبي والنقاط
             } else {
                 this.classList.remove('activeAcc');
                 this.style.backgroundColor = '';
@@ -1714,7 +1866,7 @@ function renderJSAList(data) {
 function filterJSAList() {
     const searchTerm = document.getElementById('jsaSearch').value.toLowerCase().trim();
     if (!searchTerm) {
-        renderJSAList(jsaData);
+        renderJSAList(jsaData); // Show all if no search term
         return;
     }
 
@@ -1725,24 +1877,29 @@ function filterJSAList() {
     renderJSAList(filteredData);
 }
 
+// 🆕 دالة تبديل الوضع (Dark/Light Mode)
 function toggleDarkMode() {
     const body = document.body;
     const isDarkMode = body.classList.toggle('dark-mode');
     const modeIcon = document.getElementById('modeIcon');
     
+    // تحديث الأيقونة والنص
     if (modeIcon) {
         modeIcon.classList.remove(isDarkMode ? 'fa-sun' : 'fa-moon');
         modeIcon.classList.add(isDarkMode ? 'fa-moon' : 'fa-sun');
     }
     
+    // حفظ التفضيل (اختياري، لكن يوصى به)
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     
-    renderJSAList(jsaData);
-    loadTBTOfTheDay();
+    // لإعادة تطبيق الألوان على العناصر التي تستخدم inline style أو ترث من body/root
+    renderJSAList(jsaData); // إعادة رسم قائمة JSA لضبط ألوانها
+    loadTBTOfTheDay(); // إعادة تحميل TBT لضبط لونه
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 🆕 تطبيق التفضيل المحفوظ عند التحميل
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -1754,10 +1911,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
          const modeIcon = document.getElementById('modeIcon');
          if (modeIcon) {
-             modeIcon.classList.add('fa-sun'); 
+             modeIcon.classList.add('fa-sun'); // Default icon for Light Mode
          }
     }
 
+    // 🛑 تطبيق اللون المخصص للزر النشط افتراضيًا عند تحميل الصفحة
     const infoButton = document.querySelector('.nav-button[onclick*="InfoTab"]');
     if(infoButton) {
         document.getElementById('InfoTab').classList.add('active');
@@ -1778,16 +1936,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (eomCard) eomCard.addEventListener('click', showLeaderboardModal);
 
     window.addEventListener('click', (event) => {
+         // 🟢 إضافة Modal تأكيد JSA لآلية الإغلاق
          if (event.target == leaderboardModal) hideLeaderboardModal();
          if (event.target == emergencyModal) hideEmergencyContactsModal();
          if (event.target == jsaConfirmationModal) hideJSAConfirmationModal();
     });
     
+    // 🟢 إضافة معالج حدث لزر التأكيد داخل Modal الـ JSA (تم إبقاؤه لكنه لن يُستخدم الآن)
     document.getElementById('driveLinkConfirm').addEventListener('click', () => {
+        // نغلق الـ modal بعد الضغط على الرابط (لأنه سيفتح في نافذة جديدة)
         hideJSAConfirmationModal();
     });
 
 
+    // Set the current Month and Year
     const now = new Date();
     const options = { month: 'long', year: 'numeric' };
     const currentMonthYear = now.toLocaleDateString('en-US', options);
@@ -1796,12 +1958,15 @@ document.addEventListener('DOMContentLoaded', () => {
         cardTitleElement.innerHTML = `<i class="fas fa-trophy" style="color: #FFD700;"></i> Employee of the Month (${currentMonthYear})`;
     }
 
+    // --- Employee of the Month/Leaderboard Data Fetch ---
     fetchEOMData();
     loadTBTOfTheDay();
+    // --- JSA Tab Initialization ---
     renderJSAList(jsaData);
     document.getElementById('jsaSearch').addEventListener('input', filterJSAList);
 
 
+    // --- Load News from Google Sheet (Code remains the same) ---
     const newsSheetUrl = 'https://docs.google.com/spreadsheets/d/1_SwxL5f4mWF5kd2yofCMCEE_WQp_2eroHDhXXPXtw1U/export?format=csv&gid=0';
     fetch(newsSheetUrl)
         .then(res => res.text())
@@ -1854,6 +2019,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading news:', err);
         });
     
+    // 🆕 Initialize KPIs
     renderKPIs();
 });
 </script>
