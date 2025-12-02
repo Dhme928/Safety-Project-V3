@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CAT HSE Incident Hub – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="dashboard">
+  <header class="app-header">
+    <div class="app-header__left">
+      <div class="logo-circle">CAT</div>
+      <div class="app-title">
+        <h1>HSE Incident Hub</h1>
+        <p>Near Miss &amp; Incident Reporting – Internal Use</p>
+      </div>
+    </div>
+    <nav class="app-nav">
+      <a href="index.html" class="app-nav__link app-nav__link--active">Dashboard</a>
+      <a href="report.html" class="app-nav__link">New Report</a>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <section class="toolbar">
+      <div class="toolbar-left">
+        <h2>Overview</h2>
+        <p>Monitor near misses and incidents across projects, and follow up on open actions.</p>
+      </div>
+      <div class="toolbar-right">
+        <a href="report.html" class="btn btn--primary">+ New Near Miss / Incident</a>
+        <button type="button" id="download-csv" class="btn btn--ghost">Download Filtered CSV</button>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Key indicators">
+      <div class="stat-grid">
+        <article class="stat-card">
+          <h3>Total incidents this month</h3>
+          <p class="stat-card__value" id="stat-incidents">–</p>
+          <p class="stat-card__hint">Events categorised as incidents</p>
+        </article>
+        <article class="stat-card">
+          <h3>Near misses this month</h3>
+          <p class="stat-card__value" id="stat-near-misses">–</p>
+          <p class="stat-card__hint">Opportunities for learning before harm</p>
+        </article>
+        <article class="stat-card">
+          <h3>Open actions</h3>
+          <p class="stat-card__value" id="stat-open-actions">–</p>
+          <p class="stat-card__hint">Pending closure by HSE / supervision</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="filters">
+      <header class="section-header">
+        <h2>Filter reports</h2>
+        <p>Use filters to focus on a specific period, location, or severity.</p>
+      </header>
+      <form id="filters-form" class="filters-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="filter-from-date">From date</label>
+            <input type="date" id="filter-from-date" name="fromDate" />
+          </div>
+          <div class="form-field">
+            <label for="filter-to-date">To date</label>
+            <input type="date" id="filter-to-date" name="toDate" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="filter-location">Country / Yard</label>
+            <input type="text" id="filter-location" name="location" placeholder="e.g. KSA – Ras Tanura Yard" />
+          </div>
+          <div class="form-field">
+            <label for="filter-type">Type</label>
+            <select id="filter-type" name="type">
+              <option value="">All</option>
+              <option value="Near Miss">Near Miss</option>
+              <option value="Incident">Incident</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="filter-severity">Potential severity</label>
+            <select id="filter-severity" name="severity">
+              <option value="">All</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="filter-status">Status</label>
+            <select id="filter-status" name="status">
+              <option value="">All</option>
+              <option value="Open">Open</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions form-actions--right">
+          <button type="button" id="filters-reset" class="btn btn--ghost">Reset</button>
+          <button type="submit" class="btn btn--primary-soft">Apply filters</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="table-section">
+      <header class="section-header">
+        <h2>Reports</h2>
+        <p>Click on a report to view or edit details.</p>
+      </header>
+      <div class="table-wrapper">
+        <table class="reports-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Potential severity</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reports-table-body">
+            <tr class="table-placeholder">
+              <td colspan="6">Loading reports…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>CAT Group – HSE internal prototype. For supervisors, management &amp; HSE only.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

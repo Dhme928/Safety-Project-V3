@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>New Near Miss / Incident – CAT HSE Incident Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="report">
+  <header class="app-header">
+    <div class="app-header__left">
+      <div class="logo-circle">CAT</div>
+      <div class="app-title">
+        <h1>HSE Incident Hub</h1>
+        <p>Near Miss &amp; Incident Reporting – Internal Use</p>
+      </div>
+    </div>
+    <nav class="app-nav">
+      <a href="index.html" class="app-nav__link">Dashboard</a>
+      <a href="report.html" class="app-nav__link app-nav__link--active">New Report</a>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <section class="toolbar">
+      <div class="toolbar-left">
+        <h2 id="form-title">New near miss / incident</h2>
+        <p id="form-subtitle">Capture essential details for learning and prevention.</p>
+      </div>
+      <div class="toolbar-right">
+        <a href="index.html" class="btn btn--ghost">Back to dashboard</a>
+      </div>
+    </section>
+
+    <form id="incident-form" class="incident-form">
+      <!-- Section 0 – Reference -->
+      <section class="form-section">
+        <h3>Reference</h3>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="report-number">Report #</label>
+            <input type="text" id="report-number" name="reportNumber" placeholder="Leave blank for auto-assignment" />
+          </div>
+          <div class="form-field">
+            <label for="event-date">Date <span class="required">*</span></label>
+            <input type="date" id="event-date" name="eventDate" required />
+          </div>
+          <div class="form-field">
+            <label for="event-time">Time</label>
+            <input type="time" id="event-time" name="eventTime" />
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="high-potential">High potential?</label>
+            <select id="high-potential" name="highPotential">
+              <option value="">Select…</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="Open">Open</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 1 – Event basics -->
+      <section class="form-section">
+        <h3>1. Event basics</h3>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="event-type">Event type <span class="required">*</span></label>
+            <select id="event-type" name="eventType" required>
+              <option value="">Select…</option>
+              <option value="Near Miss">Near Miss (no injury but potential)</option>
+              <option value="Incident">Incident (injury, damage, or loss)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="event-classification">Classification <span class="required">*</span></label>
+            <select id="event-classification" name="eventClassification" required>
+              <option value="">Select…</option>
+              <option value="First Aid">First Aid</option>
+              <option value="Medical Treatment Injury">Medical Treatment Injury</option>
+              <option value="Lost Time Injury">Lost Time Injury</option>
+              <option value="Property Damage">Property Damage</option>
+              <option value="Environmental">Environmental</option>
+              <option value="Security">Security</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="country-yard">Location – Country / Yard</label>
+            <input type="text" id="country-yard" name="countryYard" placeholder="e.g. KSA – Haradh Laydown" />
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="area-location">Area / exact location</label>
+            <input type="text" id="area-location" name="areaLocation" placeholder="e.g. Scaffold yard, laydown 3" />
+          </div>
+          <div class="form-field">
+            <label for="project-client">Project / client</label>
+            <input type="text" id="project-client" name="projectClient" placeholder="e.g. Aramco – Haradh Gas" />
+          </div>
+          <div class="form-field">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" placeholder="e.g. CAT / Subcontractor name" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2 – Description & risk -->
+      <section class="form-section">
+        <h3>2. Near miss details &amp; risk</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label for="near-miss-description">Near miss / incident description <span class="required">*</span></label>
+            <textarea id="near-miss-description" name="nearMissDescription" rows="4" required
+              placeholder="Briefly describe what happened, where and how. Avoid names in this section."></textarea>
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="actual-consequence">Actual consequence</label>
+            <input type="text" id="actual-consequence" name="actualConsequence"
+              placeholder="e.g. No injury, minor property damage" />
+          </div>
+          <div class="form-field">
+            <label for="potential-severity">Potential severity</label>
+            <select id="potential-severity" name="potentialSeverity">
+              <option value="">Select…</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label>Type of near miss (if applicable)</label>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="nearMissTypes" value="Heavy Equipment" /> Heavy Equipment</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Earth Collapse" /> Earth Collapse</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Road Traffic" /> Road Traffic</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Fall From Height" /> Fall from Height</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Fire" /> Fire</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Tools" /> Tools</label>
+              <label><input type="checkbox" name="nearMissTypes" value="Other" /> Other</label>
+            </div>
+            <input type="text" name="nearMissTypeOther" placeholder="If Other, please specify" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3 – Reporting & people -->
+      <section class="form-section">
+        <h3>3. Reporting &amp; people</h3>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="reporting-type">Reporting</label>
+            <select id="reporting-type" name="reportingType">
+              <option value="">Select…</option>
+              <option value="Internal">Internal</option>
+              <option value="External">External</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="reported-by">Reported by <span class="required">*</span></label>
+            <input type="text" id="reported-by" name="reportedBy" required
+              placeholder="Name of person submitting the report" />
+          </div>
+          <div class="form-field">
+            <label for="reporter-position">Reporter position</label>
+            <input type="text" id="reporter-position" name="reporterPosition" placeholder="e.g. HSE Officer" />
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="badge-number">Badge / ID</label>
+            <input type="text" id="badge-number" name="badgeNumber" />
+          </div>
+          <div class="form-field form-field--full">
+            <label for="persons-involved">Persons involved (if any)</label>
+            <textarea id="persons-involved" name="personsInvolved" rows="2"
+              placeholder="List names, badge numbers and roles if necessary."></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 – Life Saving Rules -->
+      <section class="form-section">
+        <h3>4. At-risk Life Saving Rules (if any)</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="lifeSavingRules" value="Bypassing Safety Controls" /> Bypassing Safety
+                Controls</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Confined Space" /> Confined Space</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Driving" /> Driving</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Energy Isolation" /> Energy Isolation</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Hot Work" /> Hot Work</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Line of Fire" /> Line of Fire</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Safe Mechanical Lifting" /> Safe Mechanical
+                Lifting</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Work Authorization" /> Work Authorization</label>
+              <label><input type="checkbox" name="lifeSavingRules" value="Working at Height" /> Working at Height</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5 – Analysis & actions -->
+      <section class="form-section">
+        <h3>5. Analysis &amp; actions</h3>
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label for="unsafe-act">Unsafe act (if any)</label>
+            <input type="text" id="unsafe-act" name="unsafeAct" placeholder="e.g. Not wearing harness while at height" />
+          </div>
+          <div class="form-field form-field--full">
+            <label for="unsafe-condition">Unsafe condition (if any)</label>
+            <input type="text" id="unsafe-condition" name="unsafeCondition"
+              placeholder="e.g. Missing handrails, poor housekeeping" />
+          </div>
+          <div class="form-field form-field--full">
+            <label for="root-cause">Root cause (short)</label>
+            <textarea id="root-cause" name="rootCause" rows="2"
+              placeholder="Brief summary of main root cause(s)."></textarea>
+          </div>
+          <div class="form-field form-field--full">
+            <label for="conclusion">Conclusion / lesson learned</label>
+            <textarea id="conclusion" name="conclusion" rows="2"
+              placeholder="How can we prevent this from happening again?"></textarea>
+          </div>
+          <div class="form-field form-field--full">
+            <label for="corrective-actions">Corrective / preventive actions</label>
+            <textarea id="corrective-actions" name="correctiveActions" rows="3"
+              placeholder="Actions, responsible person, target dates."></textarea>
+          </div>
+        </div>
+        <div class="form-grid form-grid--3">
+          <div class="form-field">
+            <label for="action-owner">Action owner</label>
+            <input type="text" id="action-owner" name="actionOwner" placeholder="Name / position" />
+          </div>
+          <div class="form-field">
+            <label for="target-date">Target closure date</label>
+            <input type="date" id="target-date" name="targetDate" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6 – Disclaimer & submit -->
+      <section class="form-section form-section--footer">
+        <p class="disclaimer">
+          This form is for internal HSE learning and prevention. Ensure information is accurate and aligned with CAT Group,
+          client requirements, and local regulations.
+        </p>
+        <div class="form-actions">
+          <button type="button" id="save-draft" class="btn btn--ghost">Save draft (local)</button>
+          <button type="button" id="clear-draft" class="btn btn--ghost">Clear form</button>
+          <button type="submit" id="submit-btn" class="btn btn--primary">Submit report</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <footer class="app-footer">
+    <p>CAT Group – HSE internal prototype. Always verify with local regulations and company procedures.</p>
+  </footer>
+
+  <script src="js/report.js"></script>
+</body>
+</html>
